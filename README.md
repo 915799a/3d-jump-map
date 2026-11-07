@@ -5,8 +5,10 @@ Three.js로 만든 3D 웹 점프맵 게임입니다. 하늘 위에 떠 있는 �
 
 ## 바로 플레이
 
-- **GitHub Pages**: https://915799a.github.io/3d-jump-map/ *(Pages를 켠 경우)*
+▶ **https://915799a.github.io/3d-jump-map/**
+
 - **로컬 실행**: 내려받은 폴더에서 `index.html`을 브라우저로 열면 됩니다. (인터넷 연결 필요 — Three.js와 웹폰트를 CDN에서 불러옵니다.)
+- GitHub Pages(main 브랜치 /(root))에 배포되어 있어, `main`에 푸시하면 자동으로 반영됩니다.
 
 ## 캐릭터
 
