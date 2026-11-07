@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>점프맵</title>
+<meta name="theme-color" content="#2a2466">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@500;800&display=swap" rel="stylesheet">
+<style>
+:root{--glass:rgba(18,20,46,.62);--line:rgba(255,255,255,.22);--pop:#ff4d8d;--sun:#ffd166;--mint:#4ee1b4;color-scheme:dark}
+html,body{margin:0;height:100%;overflow:hidden;background:#2a2466;color:#fff;font-family:"Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;font-weight:500;touch-action:none;user-select:none;-webkit-user-select:none}
+canvas{display:block}
+#hud{position:fixed;left:0;right:0;top:0;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 0;display:flex;justify-content:space-between;gap:8px;pointer-events:none;font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:19px;letter-spacing:.02em}
+#hud span{background:var(--glass);border:1px solid var(--line);border-radius:999px;padding:5px 15px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#st{color:var(--sun)}#dc{color:#ffb3cc}#tm{color:var(--mint);font-variant-numeric:tabular-nums}
+#bar{position:fixed;left:16px;right:16px;top:calc(58px + env(safe-area-inset-top,0px));height:6px;border-radius:6px;background:rgba(255,255,255,.18);overflow:hidden;pointer-events:none}
+#bf{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--mint),var(--sun));transition:width .5s}
+#toast{position:fixed;left:50%;top:22%;transform:translate(-50%,0);font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:34px;letter-spacing:.03em;color:#fff;text-shadow:0 0 18px rgba(255,77,141,.95),0 2px 0 rgba(0,0,0,.35);opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+#flash{position:fixed;inset:0;background:var(--pop);opacity:0;pointer-events:none;transition:opacity .35s}
+#joy{position:fixed;width:112px;height:112px;margin:-56px 0 0 -56px;border-radius:50%;border:2px solid rgba(255,255,255,.5);background:rgba(255,255,255,.1);backdrop-filter:blur(4px);display:none;pointer-events:none}
+#joy i{position:absolute;left:36px;top:36px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.9);box-shadow:0 4px 14px rgba(0,0,0,.35)}
+#jb{position:fixed;right:calc(24px + env(safe-area-inset-right,0px));bottom:calc(28px + env(safe-area-inset-bottom,0px));width:94px;height:94px;border-radius:50%;border:2px solid rgba(255,255,255,.6);background:linear-gradient(160deg,#ff86b0,var(--pop));color:#fff;font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:25px;box-shadow:0 8px 26px rgba(255,77,141,.5);display:none;touch-action:none}
+#jb:active{transform:scale(.93)}
+#ov{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 38%,rgba(255,122,168,.3),rgba(18,20,46,.78));backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.card{background:var(--glass);border:1px solid var(--line);border-radius:30px;padding:30px 34px;text-align:center;max-width:300px;box-shadow:0 24px 70px rgba(0,0,0,.45);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.card h1{margin:0 0 12px;font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:60px;font-weight:400;letter-spacing:.05em;background:linear-gradient(90deg,var(--sun),var(--pop));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.card p{margin:0 0 22px;font-size:15px;line-height:1.75;color:rgba(255,255,255,.88)}
+#go{font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:25px;letter-spacing:.05em;padding:12px 46px;border-radius:999px;border:0;background:linear-gradient(90deg,var(--mint),#8af5d6);color:#12142e;box-shadow:0 8px 24px rgba(78,225,180,.45)}
+#go:active{transform:scale(.96)}
+button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.card{max-height:94vh;overflow-y:auto}
+#tools{position:fixed;right:14px;top:calc(76px + env(safe-area-inset-top,0px));display:flex;gap:8px}
+#tools button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--glass);color:#fff;font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:18px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#tools button.off{opacity:.4}
+#acts{display:flex;flex-direction:column;align-items:center;gap:10px}
+.sb{font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:17px;color:#fff;background:rgba(255,255,255,.1);border:1px solid var(--line);border-radius:999px;padding:8px 22px}
+#wind{position:fixed;left:50%;transform:translateX(-50%);top:calc(74px + env(safe-area-inset-top,0px));display:none;font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:20px;color:#fff;background:rgba(80,160,255,.5);border:1px solid var(--line);border-radius:999px;padding:3px 16px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);pointer-events:none;white-space:nowrap}
+#pick{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:0 0 20px}
+.ch{font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:18px;color:#fff;background:rgba(255,255,255,.08);border:2px solid var(--line);border-radius:18px;padding:12px 10px;width:96px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.ch b{font-size:38px;font-weight:400;line-height:1}
+.ch.on{border-color:var(--mint);background:rgba(78,225,180,.16);box-shadow:0 0 0 3px rgba(78,225,180,.22)}
+@media (max-height:480px){.card{padding:14px 22px;max-width:400px}.card h1{font-size:40px;margin-bottom:6px}.card p{margin-bottom:10px;font-size:13px;line-height:1.5}#pick{margin-bottom:10px}.ch{padding:6px 4px;width:72px;font-size:15px}.ch b{font-size:28px}}
+@media (pointer:coarse){#jb{display:block}.k{display:none}}
+@media (pointer:fine){.t{display:none}}
+</style>
+</head>
+<body>
+<div id="hud"><span id="st">스테이지 1/14</span><span id="dc">추락 0</span><span id="tm">0:00.0</span></div><div id="bar"><i id="bf"></i></div>
+<div id="wind"></div><div id="tools"><button id="mu" aria-label="음악">♪</button><button id="pz" aria-label="일시정지">Ⅱ</button></div><div id="toast"></div><div id="flash"></div>
+<div id="joy"><i></i></div>
+<button id="jb">점프</button>
+<div id="ov"><div class="card">
+<h1 id="ot">점프맵</h1>
+<p id="op"><span class="k">WASD·방향키 이동<br>스페이스 점프<br>마우스 드래그로 시점</span><span class="t">왼쪽 화면 조이스틱<br>오른쪽 버튼 점프<br>화면 드래그로 시점</span><br>깃발에 닿으면 체크포인트!</p>
+<div id="pick"><button class="ch on" data-c="rab"><b>🐰</b>토끼</button><button class="ch" data-c="ast"><b>🧑‍🚀</b>우주인</button><button class="ch" data-c="pen"><b>🐧</b>펭귄</button><button class="ch" data-c="rob"><b>🤖</b>로봇</button></div>
+<div id="acts"><button id="go">출발</button><button id="cont" class="sb" style="display:none"></button><button id="rs" class="sb" style="display:none">체크포인트로</button></div>
+</div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const T=THREE,$=i=>document.getElementById(i),cl=(v,a,b)=>Math.max(a,Math.min(b,v));
+const R=new T.WebGLRenderer({antialias:true});R.setPixelRatio(Math.min(devicePixelRatio,2));document.body.prepend(R.domElement);
+const S=new T.Scene();const gc=document.createElement('canvas');gc.width=2;gc.height=256;const gx=gc.getContext('2d'),gr=gx.createLinearGradient(0,0,0,256);gr.addColorStop(0,'#1f2a6b');gr.addColorStop(.5,'#b4579f');gr.addColorStop(.8,'#ff8fa3');gr.addColorStop(1,'#ffd6a5');gx.fillStyle=gr;gx.fillRect(0,0,2,256);
+S.background=new T.CanvasTexture(gc);S.fog=new T.Fog(0xb4579f,55,190);
+const cam=new T.PerspectiveCamera(65,1,.1,300);
+function rs(){R.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix()}
+addEventListener('resize',rs);rs();
+S.add(new T.HemisphereLight(0xffe0f0,0x5a4a9a,1));
+const L=new T.DirectionalLight(0xffc58a,.85);L.position.set(30,60,20);S.add(L);
+
+/* ---------- 코스 ---------- */
+const plats=[],spins=[],cps=[],edge=new T.LineBasicMaterial({color:0x1d2340});
+let hue=.55;
+function flag(m,w,h,fin){
+  const ph=fin?6:3,pole=new T.Mesh(new T.CylinderGeometry(.08,.08,ph,6),new T.MeshLambertMaterial({color:0xffffff}));
+  pole.position.set(-w/2+.8,h/2+ph/2,0);
+  const f=new T.Mesh(new T.BoxGeometry(1.4,.8,.05),new T.MeshLambertMaterial({color:fin?0xffd166:0xff5d73}));
+  f.position.set(.75,ph/2-.4,0);pole.add(f);m.add(pole);
+}
+function add(x,top,z,w,d,o={}){
+  const h=.6,m=new T.Mesh(new T.BoxGeometry(w,h,d),new T.MeshLambertMaterial({color:new T.Color().setHSL(hue,.7,.62)}));
+  m.position.set(x,top-h/2,z);m.add(new T.LineSegments(new T.EdgesGeometry(m.geometry),edge));S.add(m);
+  if(o.type==='pad'){const r=new T.Mesh(new T.CylinderGeometry(Math.min(w,d)/2-.5,Math.min(w,d)/2-.5,.12,16),new T.MeshLambertMaterial({color:0xffd166}));r.position.y=h/2+.06;m.add(r)}
+  if(o.type==='van')m.material.color.setHSL(.09,.55,.7);
+  if(o.type==='bl')m.material.color.setHSL(o.grp?.5:.95,.7,.65);
+  else if(o.cv)m.material.color.setHSL(.07,.9,.55);
+  else if(o.ice)m.material=new T.MeshPhongMaterial({color:0xaee6ff,shininess:140,specular:0xffffff,transparent:true,opacity:.9});
+  else if(o.gl)m.material.color.setHSL(.5,.6,.8);
+  const cap=new T.Mesh(new T.BoxGeometry(w-.3,.04,d-.3),new T.MeshLambertMaterial({color:o.type==='van'?new T.Color().setHSL(.1,.6,.88):new T.Color().setHSL(hue,.75,.8)}));cap.position.y=h/2+.021;m.add(cap);
+  if(o.type==='bl'||o.cv||o.ice||o.gl)cap.material.color.copy(m.material.color).offsetHSL(0,0,.1);
+  const p={m,w,h,d,type:'n',on:true,st:0,tm:0,dx:0,dy:0,dz:0,bx:x,by:top-h/2,bz:z,...o};
+  if(o.type==='bl'){m.material.transparent=cap.material.transparent=true;p.mats=[m.material,cap.material]}
+  if(o.gl){m.material.transparent=cap.material.transparent=true;m.material.opacity=cap.material.opacity=.7}
+  if(o.cv){const zz=Math.abs(o.cv[1])>Math.abs(o.cv[0]);p.rgAx=zz?'z':'x';p.rgL=zz?d:w;p.rgS=o.cv[1]||o.cv[0];p.rg=[];
+    for(let i=0;i<4;i++){const r=new T.Mesh(new T.BoxGeometry(zz?w-.5:.3,.05,zz?.3:d-.5),new T.MeshLambertMaterial({color:0xffe3a0}));r.position.y=h/2+.06;m.add(r);p.rg.push(r)}}
+  plats.push(p);
+  if(o.cp!==undefined)cps[o.cp]={x,y:top,z};
+  if(o.fin||o.cp>0)flag(m,w,h,o.fin);
+  return p;
+}
+function spin(x,top,z,len,sp){
+  const g=new T.Group(),b=new T.Mesh(new T.BoxGeometry(len,.7,.5),new T.MeshLambertMaterial({color:0xff5d73}));
+  b.add(new T.LineSegments(new T.EdgesGeometry(b.geometry),edge));g.add(b);
+  g.position.set(x,top+.45,z);S.add(g);spins.push({m:g,x,z,len,sp,a:0});
+}
+let cx=0,cy=0,cz=0,pd=10;
+function nx(g,dx,dy,w,d,o){cz-=pd/2+g+d/2;cx+=dx;cy+=dy;pd=d;return add(cx,cy,cz,w,d,o)}
+const mv=(ax,amp,sp,ph)=>({type:'mv',ax,amp,sp,ph:ph||0}),VAN={type:'van'},PI=Math.PI;
+const H=[.55,.08,.35,.85,0,.62,.15,.75,.93,.45,.28,.9,.05,.52];
+const zones=[],hz=[];let lastGs=1,wasW=0,wasIce=0,wv=0;
+function haz(x,top,z,w,h,d,ax,amp,sp,ph,ball){
+  const m=new T.Mesh(ball?new T.SphereGeometry(w/2,14,10):new T.BoxGeometry(w,h,d),new T.MeshLambertMaterial({color:ball?0xff5d73:0xe8453c}));
+  if(!ball)m.add(new T.LineSegments(new T.EdgesGeometry(m.geometry),edge));
+  m.position.set(x,top+h/2,z);S.add(m);hz.push({m,bx:x,by:top+h/2,bz:z,w,h,d,ax,amp,sp,ph,ball});
+}
+function gate(x,top,z,ph){haz(x-3,top,z,4,4,.8,'x',2,1.5,ph);haz(x+3,top,z,4,4,.8,'x',2,1.5,ph+PI)}
+function zone(g,wa,fn){const z0=cz-pd/2;fn();zones.push({z0,z1:cz-pd/2,g,wa})}
+// 1 첫걸음
+hue=H[0];add(0,0,0,10,10,{cp:0});
+[[3,0,.3,4,4],[3,2,.3,3.5,3.5],[3.5,-2,.3,3,3],[3.5,0,.5,3,3],[3.5,2,.3,2.5,2.5]].forEach(a=>nx(...a));
+nx(3,0,.3,8,8,{cp:1});
+// 2 역주행 컨베이어
+hue=H[1];
+nx(2.5,0,.3,4,12,{cv:[0,4]});nx(2.5,0,.3,4,12,{cv:[0,6]});nx(2.5,2,.3,4,14,{cv:[0,7]});
+nx(2.5,-2,.3,8,8,{cp:2});
+// 3 빙판
+hue=H[2];
+nx(3,0,.3,6,6,{ice:1});nx(3,2,.3,5,9,{ice:1});nx(3,-3,.3,6,6,{ice:1});nx(3,3,.3,5,9,{ice:1});nx(3,-2,.3,6,6,{ice:1});
+nx(3,0,.3,8,8,{cp:3});
+// 4 박자 맞춰
+hue=H[3];
+for(let i=0;i<6;i++)nx(3,i%2?-1.5:1.5,.3,3.5,3.5,{type:'bl',grp:i%2});
+nx(3,0,.3,8,8,{cp:4});
+// 5 달 산책 (저중력)
+hue=H[4];
+zone(.3,0,()=>{nx(9,0,1,4,4);nx(10,3,1,4,4);nx(10,-4,1,4,4);nx(9,2,2,4,4)});
+nx(3,0,.3,8,8,{cp:5});
+// 6 볼링장
+hue=H[5];
+nx(3,0,.3,8,40);
+[[-2.7,0],[-.9,.5],[.9,.25],[2.7,.75]].forEach(([x,ph])=>haz(cx+x,cy,cz,1.8,1.8,1.8,'z',20,.2,ph,true));
+nx(3,0,.3,8,8,{cp:6});
+// 7 압착 문
+hue=H[6];
+nx(3,0,.3,10,36);[-10,0,10].forEach((dz,i)=>gate(cx,cy,cz+dz,i*1.4));
+nx(3,0,.3,8,8,{cp:7});
+// 8 유리 다리
+hue=H[7];
+{const bx=cx;[0,1,1,0,1,0].forEach(f=>{cz-=pd/2+2.6;pd=2.6;add(bx-1.6,cy,cz,2.6,2.6,{type:f?'fk':'n',gl:1});add(bx+1.6,cy,cz,2.6,2.6,{type:f?'n':'fk',gl:1})})}
+nx(2.5,0,.3,8,8,{cp:8});
+// 9 기차 점프
+hue=H[8];
+[-3,6,-6,6,-6].forEach((dx,i)=>nx(i?3:7,dx,.3,4,7,mv('z',5,1.1,i*1.3)));
+nx(7,3,.3,8,8,{cp:9});
+// 10 돌풍 능선
+hue=H[9];
+zone(1,16,()=>{[0,2,-2,2].forEach(dx=>nx(2.5,dx,.3,2.8,10))});
+nx(2.5,0,.3,8,8,{cp:10});
+// 11 트램펄린
+hue=H[10];
+nx(3,0,.3,6,6,{type:'pad'});
+for(let i=0;i<6;i++)nx(6,i%2?-3:3,2.5,6,6,{type:'pad'});
+nx(6,0,2.5,8,8,{cp:11});
+// 12 컨베이어 박자
+hue=H[11];
+for(let i=0;i<6;i++)nx(3,i%2?-2:2,.3,4,4,{type:'bl',grp:i%2,per:1.5,cv:[i%2?-3:3,0]});
+nx(3,0,.3,8,8,{cp:12});
+// 13 러닝머신
+hue=H[12];
+nx(3,0,.3,8,30,{cv:[0,4.5]});[-6,6].forEach((dz,i)=>gate(cx,cy,cz+dz,i*2));
+nx(3,0,.3,8,8,{cp:13});
+// 14 피날레
+hue=.12;
+nx(3,0,.3,5,5,{ice:1});
+nx(5,2,.3,4,7,mv('z',3,1.1,0));
+nx(5,-2,.3,3,3,{type:'bl',grp:0});nx(3,0,.3,3,3,{type:'bl',grp:1});
+nx(3,0,.3,4,4,{type:'pad'});nx(6,0,5,5,5);
+nx(3,0,.3,10,24);gate(cx,cy,cz-5,0);gate(cx,cy,cz+5,2);
+nx(3,0,.5,12,12,{fin:true});
+
+// 구름 장식
+const cm=new T.MeshLambertMaterial({color:0xffb8d1});
+for(let i=0;i<60;i++){const c=new T.Mesh(new T.SphereGeometry(4+Math.random()*6,8,6),cm);
+  c.position.set((Math.random()-.5)*120,-18-Math.random()*8,10+Math.random()*(cz-60));c.scale.y=.45;S.add(c)}
+const sp=[];for(let i=0;i<500;i++){const x=Math.random()-.5,y=Math.random()*.9+.1,z=Math.random()-.5,l=Math.hypot(x,y,z)/240;sp.push(x/l,y/l,z/l)}
+const sgeo=new T.BufferGeometry();sgeo.setAttribute('position',new T.Float32BufferAttribute(sp,3));
+const stars=new T.Points(sgeo,new T.PointsMaterial({color:0xffffff,size:2,sizeAttenuation:false,fog:false}));S.add(stars);
+
+/* ---------- 캐릭터 ---------- */
+const hero=new T.Group(),rab=new T.Group(),ast=new T.Group();let cur=rab;const ol=new T.MeshBasicMaterial({color:0x2a1b4d,side:T.BackSide}),SG=r=>new T.SphereGeometry(r,16,12);
+function mk(g,c,x,y,z,sx,sy,sz,o,par){const m=new T.Mesh(g,new T.MeshLambertMaterial({color:c}));m.position.set(x,y,z);m.scale.set(sx,sy,sz);(par||cur).add(m);if(o){const k=new T.Mesh(g,ol);k.scale.setScalar(1.08);m.add(k)}return m}
+mk(SG(.5),0xff6fa5,0,.62,0,1,1.05,.9,1);
+mk(SG(.28),0xfff1e0,0,.55,.36,1,1.1,.45);
+mk(SG(.46),0xfff4ea,0,1.3,0,1.05,1,1,1);
+const ears=[-1,1].map(s=>{const g=new T.Group();g.position.set(s*.2,1.68,0);g.rotation.z=-s*.15;g.userData.s=s;rab.add(g);
+  mk(SG(1),0xfff4ea,0,.3,0,.14,.4,.1,1,g);mk(SG(1),0xffa6c4,0,.28,.085,.07,.26,.03,0,g);return g});
+const eyes=[-1,1].map(s=>mk(SG(.065),0x2a1b4d,s*.17,1.34,.41,1,1.3,.8));
+[-1,1].forEach(s=>{mk(SG(.08),0xffa6c4,s*.29,1.2,.36,1,.7,.5);mk(SG(.022),0xffffff,s*.17+.02,1.38,.46,1,1,1)});
+mk(SG(.04),0xff6fa5,0,1.26,.45,1.2,.8,.8);
+const sc=new T.Mesh(new T.TorusGeometry(.36,.09,8,18),new T.MeshLambertMaterial({color:0xffd166}));sc.rotation.x=Math.PI/2;sc.position.y=1.02;rab.add(sc);
+const tail=new T.Group();tail.position.set(.3,1.0,-.28);rab.add(tail);mk(new T.BoxGeometry(.2,.55,.06),0xffd166,0,-.275,0,1,1,1,0,tail);
+const pf=mk(SG(.17),0xffffff,0,.4,-.5,1,1,1,1);
+const arms=[-1,1].map(s=>mk(SG(.15),0xff6fa5,s*.52,.7,.05,1,1.2,1,1));
+const legs=[-1,1].map(s=>mk(SG(.18),0x7a5cc7,s*.21,.14,0,1,.7,1.35,1));
+function animHero(spd){
+  const air=!P.g,t=T0,fall=air&&P.vy<0;
+  if(ch==='pen'){
+    flip.forEach(f=>{f.rotation.z=-f.userData.s*(air?.9:.25+Math.sin(t*14)*.3*spd)});
+    legsP.forEach((l,i)=>{l.position.z=P.g?.1+Math.sin(t*14+i*Math.PI)*.22*spd:.1+(i?.15:-.15)});
+    pen.rotation.z=P.g?Math.sin(t*14)*.1*spd:0;
+    peyes.forEach(e=>e.scale.y=t%3.1<.12?.12:1.3);return;
+  }
+  if(ch==='rob'){
+    armsB.forEach((a,i)=>{a.position.y=.6+(air?.25:0);a.position.z=.05+(air?-.05:-Math.sin(t*14+i*Math.PI)*.2*spd)});
+    legsB.forEach((l,i)=>{l.position.z=P.g?Math.sin(t*14+i*Math.PI)*.2*spd:(i?.15:-.15)});
+    flames.forEach(f=>{f.visible=air;f.scale.y=.8+Math.sin(t*40)*.3});
+    ant2.rotation.z=Math.sin(t*10)*.2*spd;
+    reyes.forEach(e=>e.scale.y=t%3.6<.1?.1:1);return;
+  }
+  if(ch==='ast'){
+    armsA.forEach((a,i)=>{a.position.y=.7+(air?.3:0);a.position.z=.05+(air?-.05:-Math.sin(t*14+i*Math.PI)*.22*spd)});
+    legsA.forEach((l,i)=>{l.position.z=P.g?Math.sin(t*14+i*Math.PI)*.22*spd:(i?.18:-.18)});
+    ant.rotation.z=-.1+Math.sin(t*10)*.25*spd+(fall?.4:0);return;
+  }
+  arms.forEach((a,i)=>{a.position.y=.7+(air?.3:0);a.position.z=.05+(air?-.05:-Math.sin(t*14+i*Math.PI)*.22*spd)});
+  ears.forEach(g=>{g.rotation.x=-(spd*.45+(fall?.5:0)+(air&&!fall?.2:0));g.rotation.z=-g.userData.s*(.15+Math.sin(t*10+g.userData.s)*.05*spd)});
+  const bl=t%3.4<.12?.12:1.3;eyes.forEach(e=>e.scale.y=bl);
+  tail.rotation.x=.15+spd*.9+(fall?.6:0)+Math.sin(t*12)*.12*spd;tail.rotation.z=Math.sin(t*9)*.12*spd;
+  pf.position.y=.4+Math.sin(t*14)*.04*spd;
+}
+cur=ast;
+mk(SG(.5),0xf2f4ff,0,.62,0,1,1.05,.9,1);
+mk(new T.BoxGeometry(.34,.26,.06),0x9aa4c8,0,.72,.43,1,1,1,1);
+mk(SG(.045),0xff4d4d,-.07,.72,.47,1,1,1);mk(SG(.045),0x4db8ff,.07,.72,.47,1,1,1);
+mk(new T.BoxGeometry(.6,.72,.3),0xc9cee0,0,.72,-.5,1,1,1,1);
+const belt=new T.Mesh(new T.TorusGeometry(.47,.06,8,18),new T.MeshLambertMaterial({color:0xff9f43}));belt.rotation.x=Math.PI/2;belt.position.y=.4;ast.add(belt);
+mk(SG(.5),0xf2f4ff,0,1.32,0,1.05,1,1,1);
+mk(SG(.4),0x23337a,0,1.32,.3,1.05,.85,.65);
+mk(SG(.07),0x9ec0ff,-.17,1.45,.54,1,.6,.5);
+const ant=new T.Group();ant.position.set(.3,1.75,0);ast.add(ant);
+mk(new T.CylinderGeometry(.02,.02,.32,6),0xc9cee0,0,.16,0,1,1,1,0,ant);mk(SG(.07),0xff4d4d,0,.34,0,1,1,1,0,ant);
+const armsA=[-1,1].map(s=>mk(SG(.15),0xf2f4ff,s*.52,.7,.05,1,1.2,1,1));
+const legsA=[-1,1].map(s=>mk(SG(.18),0xff9f43,s*.21,.14,0,1,.7,1.35,1));
+cur=rab;
+const pen=new T.Group(),rob=new T.Group();
+cur=pen;
+mk(SG(.52),0x2b3a67,0,.64,0,1,1.1,.95,1);
+mk(SG(.42),0xffffff,0,.6,.3,.9,1,.5);
+mk(SG(.42),0x2b3a67,0,1.3,0,1.05,1,1,1);
+mk(SG(.3),0xffffff,0,1.27,.3,1.2,.9,.5);
+const peyes=[-1,1].map(s=>mk(SG(.06),0x1b1f3a,s*.14,1.34,.5,1,1.3,.8));
+[-1,1].forEach(s=>mk(SG(.07),0xff9fbf,s*.27,1.2,.42,1,.6,.5));
+const beak=mk(new T.ConeGeometry(.1,.22,8),0xff9f43,0,1.24,.58,1,1,1);beak.rotation.x=Math.PI/2;
+const pscarf=new T.Mesh(new T.TorusGeometry(.38,.08,8,18),new T.MeshLambertMaterial({color:0xff4d6d}));pscarf.rotation.x=Math.PI/2;pscarf.position.y=1.02;pen.add(pscarf);
+const flip=[-1,1].map(s=>{const m=mk(SG(.15),0x2b3a67,s*.55,.72,0,.5,1.5,.9,1);m.userData.s=s;return m});
+const legsP=[-1,1].map(s=>mk(SG(.17),0xff9f43,s*.2,.1,.1,1,.5,1.5,1));
+mk(SG(.14),0x2b3a67,0,.35,-.5,1,1,1.2,1);
+cur=rob;
+mk(new T.BoxGeometry(.85,.8,.65),0x8ea2c9,0,.58,0,1,1,1,1);
+mk(new T.BoxGeometry(.42,.3,.05),0x3a4766,0,.6,.34,1,1,1);
+[[-.12,0xff5a5a],[0,0xffd166],[.12,0x4ee1b4]].forEach(([x,c])=>{const l=mk(SG(.035),c,x,.6,.38,1,1,1);l.material=new T.MeshBasicMaterial({color:c})});
+mk(new T.BoxGeometry(.95,.72,.75),0xb7c4e0,0,1.32,0,1,1,1,1);
+mk(new T.BoxGeometry(.74,.44,.05),0x10172e,0,1.32,.39,1,1,1);
+const reyes=[-1,1].map(s=>{const e=mk(new T.BoxGeometry(.17,.17,.03),0x5ef2ff,s*.18,1.36,.42,1,1,1);e.material=new T.MeshBasicMaterial({color:0x5ef2ff});return e});
+const rm=mk(new T.BoxGeometry(.28,.04,.03),0x5ef2ff,0,1.2,.42,1,1,1);rm.material=new T.MeshBasicMaterial({color:0x5ef2ff});
+[-1,1].forEach(s=>{const e=mk(new T.CylinderGeometry(.1,.1,.14,10),0xff9f43,s*.52,1.32,0,1,1,1,1);e.rotation.z=Math.PI/2});
+const ant2=new T.Group();ant2.position.set(0,1.68,0);rob.add(ant2);
+mk(new T.CylinderGeometry(.025,.025,.3,6),0xc9cee0,0,.15,0,1,1,1,0,ant2);
+const ab=mk(SG(.08),0xff9f43,0,.33,0,1,1,1,0,ant2);ab.material=new T.MeshBasicMaterial({color:0xff9f43});
+const armsB=[-1,1].map(s=>mk(new T.BoxGeometry(.18,.5,.18),0x8ea2c9,s*.58,.6,.05,1,1,1,1));
+const legsB=[-1,1].map(s=>mk(new T.BoxGeometry(.24,.28,.32),0xff9f43,s*.2,.14,0,1,1,1,1));
+const flames=[-1,1].map(s=>{const f=new T.Mesh(new T.ConeGeometry(.1,.4,8),new T.MeshBasicMaterial({color:0xffa94d}));f.rotation.x=Math.PI;f.position.set(s*.2,-.15,0);f.visible=false;rob.add(f);return f});
+cur=rab;
+hero.add(rab,ast,pen,rob);S.add(hero);
+const wps=[],wmat=new T.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0,fog:false});
+for(let i=0;i<50;i++){const m=new T.Mesh(new T.BoxGeometry(2.4,.04,.04),wmat);m.position.set((Math.random()-.5)*50,Math.random()*9,(Math.random()-.5)*50);S.add(m);wps.push(m)}
+const ip=[];for(let i=0;i<14;i++){const m=new T.Mesh(new T.BoxGeometry(.14,.14,.14),new T.MeshBasicMaterial({color:0xe6f7ff,transparent:true,opacity:0}));m.visible=false;S.add(m);ip.push({m,l:0,vx:0,vz:0})}
+let ipI=0,ipT=0;
+let ch='rab';try{ch=localStorage.getItem('jm-char')||'rab'}catch(e){}
+function setCh(c){ch=c;rab.visible=c==='rab';ast.visible=c==='ast';pen.visible=c==='pen';rob.visible=c==='rob';document.querySelectorAll('.ch').forEach(b=>b.classList.toggle('on',b.dataset.c===c));try{localStorage.setItem('jm-char',c)}catch(e){}}
+document.querySelectorAll('.ch').forEach(b=>b.addEventListener('click',()=>setCh(b.dataset.c)));
+setCh(ch);
+
+/* ---- 이펙트: 먼지 / 컨페티 ---- */
+const dp=[];for(let i=0;i<20;i++){const m=new T.Mesh(new T.SphereGeometry(.14,6,5),new T.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0}));m.visible=false;S.add(m);dp.push({m,l:0,vx:0,vy:0,vz:0})}
+let dpI=0;
+function puff(n){for(let i=0;i<n;i++){const q=dp[dpI++%dp.length];q.l=.5;q.vx=(Math.random()-.5)*3;q.vz=(Math.random()-.5)*3;q.vy=.8+Math.random()*1.2;q.m.position.set(P.x,P.y+.1,P.z);q.m.visible=true}}
+const cf=[];
+function confetti(){for(let i=0;i<70;i++){const m=new T.Mesh(new T.BoxGeometry(.18,.04,.12),new T.MeshBasicMaterial({color:[0xff4d8d,0xffd166,0x4ee1b4,0x7ab8ff][i%4]}));m.position.set(P.x,P.y+1.5,P.z);S.add(m);const a=Math.random()*6.28,r=2+Math.random()*5;cf.push({m,l:2.6,vx:Math.cos(a)*r,vz:Math.sin(a)*r,vy:7+Math.random()*6})}}
+function fx(dt){
+  for(const q of dp)if(q.l>0){q.l-=dt;q.m.position.x+=q.vx*dt;q.m.position.z+=q.vz*dt;q.m.position.y+=q.vy*dt;q.m.material.opacity=Math.max(0,q.l*1.4);if(q.l<=0)q.m.visible=false}
+  for(let i=cf.length-1;i>=0;i--){const c=cf[i];c.l-=dt;c.vy-=14*dt;c.m.position.x+=c.vx*dt;c.m.position.y+=c.vy*dt;c.m.position.z+=c.vz*dt;c.m.rotation.x+=dt*8;c.m.rotation.z+=dt*6;if(c.l<=0){S.remove(c.m);cf.splice(i,1)}}
+}
+
+/* ---- 일시정지 / 이어하기 ---- */
+let paused=false,sv=null;
+try{sv=JSON.parse(localStorage.getItem('jm-save'))}catch(e){}
+function saveP(){try{localStorage.setItem('jm-save',JSON.stringify({cp:curCp,tt,deaths}))}catch(e){}}
+if(sv&&sv.cp>0&&sv.cp<14){const b=$('cont');b.textContent='이어하기 · 스테이지 '+(sv.cp+1);b.style.display='inline-block'}
+$('cont').addEventListener('click',()=>{curCp=sv.cp;tt=sv.tt||0;deaths=sv.deaths||0;const c=cps[curCp];Object.assign(P,{x:c.x,y:c.y+.01,z:c.z,vx:0,vy:0,vz:0,g:null});hud();start()});
+function pause(){
+  if(!run)return;run=false;paused=true;jx=jy=0;joy.style.display='none';ptr.clear();
+  $('ot').textContent='일시정지';$('op').innerHTML='스테이지 '+(curCp+1)+'/14<br>'+fmt(tt)+' · 추락 '+deaths;
+  $('go').textContent='계속하기';$('rs').style.display='inline-block';$('ov').style.display='flex';
+}
+$('pz').addEventListener('click',pause);
+$('rs').addEventListener('click',()=>{const c=cps[curCp];Object.assign(P,{x:c.x,y:c.y+.01,z:c.z,vx:0,vy:0,vz:0,g:null});start()});
+addEventListener('keydown',e=>{if(e.code==='Escape'||e.code==='KeyP'){if(run)pause();else if(paused)start()}});
+
+/* ---- 배경음악 ---- */
+let mus=true,mT=0,mS=0;try{mus=localStorage.getItem('jm-mu')!=='0'}catch(e){}
+$('mu').classList.toggle('off',!mus);
+$('mu').addEventListener('click',()=>{mus=!mus;$('mu').classList.toggle('off',!mus);try{localStorage.setItem('jm-mu',mus?'1':'0')}catch(e){}});
+const CHD=[[0,4,7,11],[5,9,12,16],[7,11,14,17],[4,7,11,14]];
+function mn(f,t,d,ty,v){const o=AC.createOscillator(),g=AC.createGain();o.type=ty;o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+.02);g.gain.exponentialRampToValueAtTime(.0005,t+d);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d+.05)}
+setInterval(()=>{
+  if(!mus||!run||!AC)return;
+  try{if(mT<AC.currentTime)mT=AC.currentTime+.05;
+  while(mT<AC.currentTime+.3){const c=CHD[Math.floor(mS/8)%4],i=mS%8;mn(220*2**((c[i%4]+(i>3?12:0))/12),mT,.5,'triangle',.035);if(i===0)mn(110*2**(c[0]/12),mT,1.6,'sine',.06);mS++;mT+=.21}}catch(e){}
+},100);
+const shadow=new T.Mesh(new T.CircleGeometry(.5,16),new T.MeshBasicMaterial({color:0,transparent:true,opacity:.3}));
+shadow.rotation.x=-PI/2;S.add(shadow);
+
+/* ---------- 상태/입력 ---------- */
+const G=-32,JUMP=12.5,SP=8;
+const P={x:0,y:.01,z:0,vx:0,vy:0,vz:0,g:null,face:0,coy:0};
+let run=false,done=false,tt=0,deaths=0,curCp=0,yaw=0,pitch=.45,jb=0,jx=0,jy=0,T0=0;
+const look={x:0,y:1.2,z:0},keys={};
+let best=0;try{localStorage.removeItem('jm-best')}catch(e){}try{best=+localStorage.getItem('jm-best2')||0}catch(e){}
+const fmt=t=>Math.floor(t/60)+':'+(t%60).toFixed(1).padStart(4,'0');
+addEventListener('keydown',e=>{keys[e.code]=1;if(e.code==='Space'){jb=.12;e.preventDefault()}if(e.code.startsWith('Arrow'))e.preventDefault()});
+addEventListener('keyup',e=>keys[e.code]=0);
+$('jb').addEventListener('pointerdown',e=>{jb=.12;e.stopPropagation()});
+const ptr=new Map(),joy=$('joy'),knob=joy.firstChild;
+addEventListener('pointerdown',e=>{
+  if(!run||e.target.closest('button'))return;
+  const left=e.pointerType==='touch'&&e.clientX<innerWidth*.45;
+  ptr.set(e.pointerId,{t:left?'j':'c',x:e.clientX,y:e.clientY,ox:e.clientX,oy:e.clientY});
+  if(left){joy.style.display='block';joy.style.left=e.clientX+'px';joy.style.top=e.clientY+'px';knob.style.transform='none'}
+});
+addEventListener('pointermove',e=>{
+  const q=ptr.get(e.pointerId);if(!q)return;
+  if(q.t==='c'){yaw-=(e.clientX-q.x)*.006;pitch=cl(pitch+(e.clientY-q.y)*.004,.1,1.2);q.x=e.clientX;q.y=e.clientY}
+  else{const dx=e.clientX-q.ox,dy=e.clientY-q.oy,l=Math.hypot(dx,dy),k=l>45?45/l:1;
+    jx=cl(dx/45,-1,1);jy=cl(dy/45,-1,1);knob.style.transform=`translate(${dx*k}px,${dy*k}px)`}
+});
+function up(e){const q=ptr.get(e.pointerId);if(!q)return;ptr.delete(e.pointerId);if(q.t==='j'){jx=jy=0;joy.style.display='none'}}
+addEventListener('pointerup',up);addEventListener('pointercancel',up);
+
+function toast(s){const t=$('toast');t.textContent=s;t.style.opacity=1;clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.opacity=0,1100)}
+const NM=['첫걸음','역주행 컨베이어','빙판','박자 맞춰','달 산책','볼링장','압착 문','유리 다리','기차 점프','돌풍 능선','트램펄린','컨베이어 박자','러닝머신','피날레'];
+let AC;function sfx(f,d,ty,v,f2){try{AC=AC||new AudioContext();const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type=ty;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(AC.destination);o.start();o.stop(t+d)}catch(e){}}
+function hud(){$('st').textContent='스테이지 '+(curCp+1)+'/14';$('dc').textContent='추락 '+deaths;$('bf').style.width=(curCp/14*100)+'%'}
+function die(){
+  deaths++;sfx(300,.25,'sawtooth',.06,80);hud();const c=cps[curCp];Object.assign(P,{x:c.x,y:c.y+.01,z:c.z,vx:0,vy:0,vz:0,g:null});
+  const f=$('flash');f.style.transition='none';f.style.opacity=.6;requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.transition='opacity .35s';f.style.opacity=0}));
+}
+function reset(){
+  curCp=0;deaths=0;tt=0;done=false;yaw=0;
+  for(const q of plats)if(q.type==='van'){q.st=0;q.on=true;q.m.visible=true;q.m.position.x=q.bx}
+  const c=cps[0];Object.assign(P,{x:c.x,y:c.y+.01,z:c.z,vx:0,vy:0,vz:0,g:null});hud();
+}
+function win(){
+  run=false;done=true;let nb='';confetti();try{localStorage.removeItem('jm-save')}catch(e){}sfx(523,.5,'triangle',.12,1046);$('bf').style.width='100%';
+  if(!best||tt<best){best=tt;nb=' 신기록!';try{localStorage.setItem('jm-best2',tt)}catch(e){}}
+  $('ot').textContent='클리어!';
+  $('op').innerHTML='기록 '+fmt(tt)+nb+'<br>추락 '+deaths+'번'+(best?'<br>최고 '+fmt(best):'');
+  $('go').textContent='다시 하기';$('ov').style.display='flex';
+}
+function start(){if(done)reset();$('ov').style.display='none';paused=false;$('rs').style.display='none';$('cont').style.display='none';run=true;sfx(500,.1,'triangle',.08,800);toast('스테이지 '+(curCp+1)+' · '+NM[curCp])}
+$('go').addEventListener('click',start);
+addEventListener('keydown',e=>{if(e.code==='Enter'&&!run)start()});
+
+/* ---------- 물리 ---------- */
+function hit(){
+  for(const q of plats){if(!q.on)continue;const m=q.m.position;
+    if(Math.abs(P.x-m.x)<q.w/2+.4&&Math.abs(P.z-m.z)<q.d/2+.4&&P.y<m.y+q.h/2-.001&&P.y+1.8>m.y-q.h/2+.001)return q}
+  return null;
+}
+function onLand(q){puff(5);
+  if((q.type==='van'||q.type==='fk')&&q.st===0){q.st=1;q.tm=q.type==='fk'?.12:.55}
+  if(q.cp!==undefined&&q.cp>curCp){curCp=q.cp;sfx(660,.25,'triangle',.1,990);hud();puff(10);saveP();toast('스테이지 '+(curCp+1)+' · '+NM[curCp])}
+  if(q.fin)win();
+  if(q.ice){if(!wasIce)toast('미끄러워!');wasIce=1}else wasIce=0;
+  if(q.type==='pad'){P.vy=24;P.g=null;sfx(300,.3,'sine',.12,900);toast('붕!')}
+}
+function upd(t,dt){
+  for(const p of plats){
+    const o=p.m.position,ox=o.x,oy=o.y,oz=o.z;
+    if(p.type==='mv'){const s=Math.sin(t*p.sp+p.ph)*p.amp;o.set(p.bx+(p.ax==='x'?s:0),p.by+(p.ax==='y'?s:0),p.bz+(p.ax==='z'?s:0))}
+    else if(p.type==='bl'){const per=p.per||1.8,k=t/per,on=(Math.floor(k)+p.grp)%2===0,warn=on&&k%1>.78;p.on=on;p.mats.forEach(x=>x.opacity=on?(warn&&Math.floor(t*14)%2?.35:1):.16)}
+    else if(p.type==='van'||p.type==='fk'){
+      if(p.st===1){p.tm-=dt;o.x=p.bx+(Math.random()-.5)*.14;if(p.tm<=0){p.st=2;p.tm=2.2;p.on=false;p.m.visible=false}}
+      else if(p.st===2){p.tm-=dt;if(p.tm<=0){p.st=0;p.on=true;p.m.visible=true;o.x=p.bx}}
+    }
+    if(p.rg)p.rg.forEach((r,i)=>{const L=p.rgL;r.position[p.rgAx]=(((t*p.rgS+i*L/4)%L)+L)%L-L/2});
+    p.dx=o.x-ox;p.dy=o.y-oy;p.dz=o.z-oz;
+  }
+  for(const s of spins){s.a=t*s.sp;s.m.rotation.y=s.a}
+  for(const k of hz){const s=k.ball?(((t*k.sp+k.ph)%1+1)%1-.5)*k.amp*2:Math.sin(t*k.sp+k.ph)*k.amp;
+    k.m.position.set(k.bx+(k.ax==='x'?s:0),k.by,k.bz+(k.ax==='z'?s:0));if(k.ball)k.m.rotation.x=-s*1.1}
+}
+function step(dt){
+  tt+=dt;
+  if(P.g){P.x+=P.g.dx;P.y+=P.g.dy;P.z+=P.g.dz;if(P.g.cv){P.x+=P.g.cv[0]*dt;P.z+=P.g.cv[1]*dt}}
+  const kx=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0),kz=(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0);
+  let mx=kx+jx,mz=kz-jy;const ml=Math.hypot(mx,mz);if(ml>1){mx/=ml;mz/=ml}
+  const sy=Math.sin(yaw),cyw=Math.cos(yaw),tx=(mx*cyw-mz*sy)*SP,tz=(-mx*sy-mz*cyw)*SP,a=(P.g?(P.g.ice?3.5:70):35)*dt;
+  P.vx+=cl(tx-P.vx,-a,a);P.vz+=cl(tz-P.vz,-a,a);
+  if(ml>.1)P.face=Math.atan2(tx,tz);
+  P.coy=P.g?.1:P.coy-dt;jb-=dt;
+  if(jb>0&&P.coy>0){P.vy=JUMP;P.coy=0;jb=0;P.g=null;sfx(380,.12,'square',.04,640);puff(4)}
+  let gs=1,wa=0;for(const zn of zones)if(P.z<zn.z0&&P.z>zn.z1){gs=zn.g;wa=zn.wa}
+  if(gs!==lastGs){lastGs=gs;if(gs<1)toast('저중력!')}
+  if(wa&&!wasW)toast('돌풍!');wasW=wa;
+  wv=wa?Math.sin(T0*.9)*wa*.35:0;P.x+=wv*dt;
+  const wd=$('wind');if(wa){const sr=wv*Math.cos(yaw),n=Math.min(3,Math.ceil(Math.abs(sr)/2));wd.textContent=n?(sr>0?'→ 돌풍 ':'← 돌풍 ')+(sr>0?'»':'«').repeat(n):'돌풍 잠잠';wd.style.display='block'}else wd.style.display='none';
+  P.vy=Math.max(P.vy+G*gs*dt,-35);
+  const pg=P.g,py=P.y;let q;
+  P.x+=P.vx*dt;if(q=hit()){P.x=P.vx>0?q.m.position.x-q.w/2-.401:q.m.position.x+q.w/2+.401;P.vx=0}
+  P.z+=P.vz*dt;if(q=hit()){P.z=P.vz>0?q.m.position.z-q.d/2-.401:q.m.position.z+q.d/2+.401;P.vz=0}
+  P.y+=P.vy*dt;P.g=null;
+  for(const q of plats){if(!q.on)continue;const m=q.m.position;
+    if(Math.abs(P.x-m.x)<q.w/2+.4&&Math.abs(P.z-m.z)<q.d/2+.4){
+      const top=m.y+q.h/2,bot=m.y-q.h/2;
+      if(P.vy<=0&&py>=top-.08&&P.y<=top){P.y=top;P.vy=0;P.g=q}
+      else if(P.vy>0&&py+1.8<=bot+.08&&P.y+1.8>=bot){P.y=bot-1.8;P.vy=0}
+    }}
+  if(P.g&&P.g!==pg)onLand(P.g);
+  for(const s of spins){
+    const dx=P.x-s.x,dz=P.z-s.z,c=Math.cos(s.a),n=Math.sin(s.a),lx=dx*c-dz*n,lz=dx*n+dz*c,by=s.m.position.y;
+    if(Math.abs(lx)<s.len/2+.3&&Math.abs(lz)<.55&&P.y<by+.4&&P.y+1.8>by-.4){die();break}
+  }
+  for(const k of hz){const m=k.m.position;if(Math.abs(P.x-m.x)<k.w/2+.3&&Math.abs(P.z-m.z)<k.d/2+.3&&P.y<m.y+k.h/2&&P.y+1.7>m.y-k.h/2){die();break}}
+  if(P.y<cps[curCp].y-22)die();
+  $('tm').textContent=fmt(tt);
+}
+function draw(dt){
+  hero.position.set(P.x,P.y,P.z);const sq=cl(P.vy/35,-.3,.3)*.4,spd=cl(Math.hypot(P.vx,P.vz)/4,0,1);hero.scale.set(1-sq*.5,1+sq,1-sq*.5);legs.forEach((l,i)=>{l.position.z=P.g?Math.sin(T0*14+i*PI)*.22*spd:(i?.18:-.18)});animHero(spd);
+  const d=((P.face-hero.rotation.y+PI)%(2*PI)+2*PI)%(2*PI)-PI;hero.rotation.y+=d*Math.min(1,dt*14);
+  let st=-1e9;
+  for(const q of plats){if(!q.on)continue;const m=q.m.position;
+    if(Math.abs(P.x-m.x)<q.w/2&&Math.abs(P.z-m.z)<q.d/2){const tp=m.y+q.h/2;if(tp<=P.y+.05&&tp>st)st=tp}}
+  shadow.visible=st>-1e8;shadow.position.set(P.x,st+.02,P.z);shadow.scale.setScalar(cl(1-(P.y-st)/12,.4,1));
+  yaw+=((keys.KeyE?1:0)-(keys.KeyQ?1:0))*dt*2;
+  const k=1-Math.exp(-dt*8);look.x+=(P.x-look.x)*k;look.y+=(P.y+1.2-look.y)*k;look.z+=(P.z-look.z)*k;
+  const dist=9,cp=Math.cos(pitch);
+  cam.position.set(look.x+Math.sin(yaw)*cp*dist,look.y+Math.sin(pitch)*dist,look.z+Math.cos(yaw)*cp*dist);
+  cam.lookAt(look.x,look.y,look.z);stars.position.copy(cam.position);fx(dt);
+  wmat.opacity+=((wv?Math.min(.7,Math.abs(wv)/5):0)-wmat.opacity)*Math.min(1,dt*5);
+  if(wmat.opacity>.02)for(const m of wps){m.position.x=P.x+((((m.position.x+wv*2.2*dt-P.x+25)%50)+50)%50)-25;if(Math.abs(m.position.z-P.z)>25)m.position.z=P.z+(Math.random()-.5)*50;if(Math.abs(m.position.y-P.y-4)>9)m.position.y=P.y+Math.random()*9}
+  ipT-=dt;
+  if(P.g&&P.g.ice&&Math.hypot(P.vx,P.vz)>2&&ipT<=0){ipT=.05;const q=ip[ipI++%ip.length];q.l=.45;q.vx=-P.vx*.25+(Math.random()-.5);q.vz=-P.vz*.25+(Math.random()-.5);q.m.position.set(P.x,P.y+.1,P.z);q.m.visible=true}
+  for(const q of ip)if(q.l>0){q.l-=dt;q.m.position.x+=q.vx*dt;q.m.position.z+=q.vz*dt;q.m.position.y+=dt*1.2;q.m.material.opacity=Math.max(0,q.l/.45);if(q.l<=0)q.m.visible=false}
+}
+reset();
+let last=performance.now();
+function loop(now){
+  requestAnimationFrame(loop);
+  const dt=Math.min((now-last)/1000,.033);last=now;T0+=dt;
+  upd(T0,dt);if(run)step(dt);draw(dt);R.render(S,cam);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
