@@ -303,7 +303,7 @@ function buildPen(){
     armL:arm(tor,-1,.55,.95,0x2b3a67,.5),armR:arm(tor,1,.55,.95,0x2b3a67,.5),
     legL:leg(R,-1,.2,0xff9f43),legR:leg(R,1,.2,0xff9f43),
     upd(a){
-      const f=a.air?.9:.25+Math.abs(Math.sin(a.t*14))*.35*a.run;
+      const f=(a.up?.9:.25)+Math.abs(Math.sin(a.t*14))*.35*a.run;
       this.armL.rotation.set(0,0,-f);this.armR.rotation.set(0,0,f);
       piv.rotation.z=a.air?0:Math.sin(a.t*14)*.1*a.run;
       pom.rotation.z=Math.sin(a.t*9)*.3*a.run;pom.position.y=.5+(a.fall?.05:0);bk.rotation.x=a.air?-.1:0}};
@@ -367,7 +367,7 @@ function animHero(spd){
   m.piv.position.y=.45+(air?0:Math.abs(Math.sin(t*14))*.07*run);
   m.tor.scale.y=1+Math.sin(t*2.6)*.02*idle;
   m.head.rotation.set(-run*.1+(fall?-.25:0),Math.sin(t*.8)*.35*idle*(Math.sin(t*.37)>0?1:.2),Math.sin(t*1.3)*.05*idle);
-  if(air){m.armL.rotation.set(up?-2.3:-.3,0,up?-.25:-.9);m.armR.rotation.set(up?-2.3:-.3,0,up?.25:.9);m.legL.rotation.x=up?-.7:.3;m.legR.rotation.x=up?.5:-.3}
+  if(air){m.armL.rotation.set(up?-2.3:-.3,0,up?-.25:-.08);m.armR.rotation.set(up?-2.3:-.3,0,up?.25:.08);m.legL.rotation.x=up?-.7:.3;m.legR.rotation.x=up?.5:-.3}
   else{m.armL.rotation.set(-sw*.9,0,-.08);m.armR.rotation.set(sw*.9,0,.08);m.legL.rotation.x=sw*.9;m.legR.rotation.x=-sw*.9}
   const bl=t%3.3<.12?.1:1;
   m.eyes.forEach(e=>{if(!e.userData.b)e.userData.b=e.scale.y;e.scale.y=e.userData.b*bl});
@@ -491,7 +491,7 @@ const G=-32,JUMP=12.5,SP=8;
 const P={x:0,y:.01,z:0,vx:0,vy:0,vz:0,g:null,face:0,coy:0};
 let run=false,done=false,tt=0,deaths=0,curCp=0,yaw=0,pitch=.45,jb=0,jx=0,jy=0,T0=0;
 const look={x:0,y:1.2,z:0},keys={};
-let best=0;try{localStorage.removeItem('jm-best')}catch(e){}try{best=+localStorage.getItem('jm-best2')||0}catch(e){}
+let best=0;try{localStorage.removeItem('jm-best');localStorage.removeItem('jm-best2');best=+localStorage.getItem('jm-best3')||0}catch(e){}
 const fmt=t=>Math.floor(t/60)+':'+(t%60).toFixed(1).padStart(4,'0');
 addEventListener('keydown',e=>{keys[e.code]=1;if(e.code==='Space'){jb=.12;e.preventDefault()}if(e.code.startsWith('Arrow'))e.preventDefault()});
 addEventListener('keyup',e=>keys[e.code]=0);
@@ -536,7 +536,7 @@ function reset(){
 }
 function win(){
   run=false;done=true;let nb='';confetti();try{localStorage.removeItem('jm-save')}catch(e){}sfx(523,.5,'triangle',.12,1046);$('bf').style.width='100%';
-  if(!best||tt<best){best=tt;nb=' 신기록!';try{localStorage.setItem('jm-best2',tt)}catch(e){}}
+  if(!best||tt<best){best=tt;nb=' 신기록!';try{localStorage.setItem('jm-best3',tt)}catch(e){}}
   $('ot').textContent='클리어!';
   $('op').innerHTML='기록 '+fmt(tt)+nb+'<br>추락 '+deaths+'번'+(best?'<br>최고 '+fmt(best):'');
   $('go').textContent='다시 하기';$('ov').style.display='flex';
