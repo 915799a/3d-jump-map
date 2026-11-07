@@ -40,6 +40,7 @@ button:focus-visible{outline:3px solid #fff;outline-offset:3px}
 #bgmL{font-size:12px;opacity:.7;margin-bottom:6px}
 #bgm{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:0 0 16px}
 #bgm .gn{padding:5px 11px;font-size:14px;text-align:center}
+#ov:not(.pz) #bgmL,#ov:not(.pz) #bgm{display:none}
 .sb{font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:17px;color:#fff;background:rgba(255,255,255,.1);border:1px solid var(--line);border-radius:999px;padding:8px 22px}
 #wind{position:fixed;left:50%;transform:translateX(-50%);top:calc(74px + env(safe-area-inset-top,0px));display:none;font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:20px;color:#fff;background:rgba(80,160,255,.5);border:1px solid var(--line);border-radius:999px;padding:3px 16px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);pointer-events:none;white-space:nowrap}
 #pick{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:0 0 20px}
@@ -61,7 +62,7 @@ button:focus-visible{outline:3px solid #fff;outline-offset:3px}
 <p id="op"><span class="k">WASD·방향키 이동<br>스페이스 점프<br>마우스 드래그로 시점</span><span class="t">왼쪽 화면 조이스틱<br>오른쪽 버튼 점프<br>화면 드래그로 시점</span><br>깃발에 닿으면 체크포인트!</p>
 <div id="pick"><button class="ch on" data-c="rab"><b>🐰</b>토끼</button><button class="ch" data-c="ast"><b>🧑‍🚀</b>우주인</button><button class="ch" data-c="pen"><b>🐧</b>펭귄</button><button class="ch" data-c="rob"><b>🤖</b>로봇</button></div>
 <div id="bgmL">배경음악</div><div id="bgm"><button class="gn" data-g="arc">8비트</button><button class="gn" data-g="amb">앰비언트</button><button class="gn" data-g="ele">일렉트로</button><button class="gn" data-g="off">끔</button></div>
-<div id="acts"><button id="go">출발</button><button id="cont" class="sb" style="display:none"></button><button id="rs" class="sb" style="display:none">체크포인트로</button></div>
+<div id="acts"><button id="go">출발</button><button id="cont" class="sb" style="display:none"></button><button id="rs" class="sb" style="display:none">체크포인트로</button><button id="rr" class="sb" style="display:none">처음부터</button></div>
 </div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -372,10 +373,18 @@ $('cont').addEventListener('click',()=>{curCp=sv.cp;tt=sv.tt||0;deaths=sv.deaths
 function pause(){
   if(!run)return;run=false;paused=true;jx=jy=0;joy.style.display='none';ptr.clear();
   $('ot').textContent='일시정지';$('op').innerHTML='스테이지 '+(curCp+1)+'/'+NM.length+'<br>'+fmt(tt)+' · 추락 '+deaths;
-  $('go').textContent='계속하기';$('rs').style.display='inline-block';$('ov').style.display='flex';
+  $('go').textContent='계속하기';$('rs').style.display='inline-block';$('rr').style.display='inline-block';$('ov').classList.add('pz');$('ov').style.display='flex';
 }
 $('pz').addEventListener('click',pause);
 $('rs').addEventListener('click',()=>{const c=cps[curCp];Object.assign(P,{x:c.x,y:c.y+.01,z:c.z,vx:0,vy:0,vz:0,g:null});start()});
+let rrT=0;
+$('rr').addEventListener('click',()=>{
+  const b=$('rr');
+  if(!rrT){b.textContent='정말 처음부터? 한 번 더 누르기';rrT=setTimeout(()=>{rrT=0;b.textContent='처음부터'},3000);return}
+  clearTimeout(rrT);rrT=0;b.textContent='처음부터';
+  try{localStorage.removeItem('jm-save')}catch(e){}
+  reset();start();
+});
 addEventListener('keydown',e=>{if(e.code==='Escape'||e.code==='KeyP'){if(run)pause();else if(paused)start()}});
 
 /* ---- 배경음악 (Web Audio 합성 · 3장르) ---- */
@@ -493,7 +502,7 @@ function win(){
   $('op').innerHTML='기록 '+fmt(tt)+nb+'<br>추락 '+deaths+'번'+(best?'<br>최고 '+fmt(best):'');
   $('go').textContent='다시 하기';$('ov').style.display='flex';
 }
-function start(){if(done)reset();$('ov').style.display='none';paused=false;$('rs').style.display='none';$('cont').style.display='none';run=true;sfx(500,.1,'triangle',.08,800);toast('스테이지 '+(curCp+1)+' · '+NM[curCp])}
+function start(){if(done)reset();$('ov').style.display='none';paused=false;$('rs').style.display='none';$('rr').style.display='none';$('ov').classList.remove('pz');$('cont').style.display='none';run=true;sfx(500,.1,'triangle',.08,800);toast('스테이지 '+(curCp+1)+' · '+NM[curCp])}
 $('go').addEventListener('click',start);
 addEventListener('keydown',e=>{if(e.code==='Enter'&&!run)start()});
 
