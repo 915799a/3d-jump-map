@@ -33,26 +33,34 @@ button:focus-visible{outline:3px solid #fff;outline-offset:3px}
 #tools button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--glass);color:#fff;font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:18px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 #tools button.off{opacity:.4}
 #acts{display:flex;flex-direction:column;align-items:center;gap:10px}
+.gn{font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:15px;color:#fff;background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:999px;padding:6px 14px;text-align:left}
+.gn.on{background:rgba(78,225,180,.22);border-color:var(--mint)}
+#mm{position:fixed;right:14px;top:calc(124px + env(safe-area-inset-top,0px));display:none;flex-direction:column;gap:6px;background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:10px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#mm.show{display:flex}
+#bgmL{font-size:12px;opacity:.7;margin-bottom:6px}
+#bgm{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:0 0 16px}
+#bgm .gn{padding:5px 11px;font-size:14px;text-align:center}
 .sb{font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:17px;color:#fff;background:rgba(255,255,255,.1);border:1px solid var(--line);border-radius:999px;padding:8px 22px}
 #wind{position:fixed;left:50%;transform:translateX(-50%);top:calc(74px + env(safe-area-inset-top,0px));display:none;font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:20px;color:#fff;background:rgba(80,160,255,.5);border:1px solid var(--line);border-radius:999px;padding:3px 16px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);pointer-events:none;white-space:nowrap}
 #pick{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:0 0 20px}
 .ch{font-family:"Do Hyeon","Noto Sans KR",sans-serif;font-size:18px;color:#fff;background:rgba(255,255,255,.08);border:2px solid var(--line);border-radius:18px;padding:12px 10px;width:96px;display:flex;flex-direction:column;align-items:center;gap:4px}
 .ch b{font-size:38px;font-weight:400;line-height:1}
 .ch.on{border-color:var(--mint);background:rgba(78,225,180,.16);box-shadow:0 0 0 3px rgba(78,225,180,.22)}
-@media (max-height:480px){.card{padding:14px 22px;max-width:400px}.card h1{font-size:40px;margin-bottom:6px}.card p{margin-bottom:10px;font-size:13px;line-height:1.5}#pick{margin-bottom:10px}.ch{padding:6px 4px;width:72px;font-size:15px}.ch b{font-size:28px}}
+@media (max-height:480px){.card{padding:14px 22px;max-width:400px}.card h1{font-size:40px;margin-bottom:6px}.card p{margin-bottom:10px;font-size:13px;line-height:1.5}#pick{margin-bottom:10px}#bgmL{display:none}#bgm{margin-bottom:8px}.ch{padding:6px 4px;width:72px;font-size:15px}.ch b{font-size:28px}}
 @media (pointer:coarse){#jb{display:block}.k{display:none}}
 @media (pointer:fine){.t{display:none}}
 </style>
 </head>
 <body>
-<div id="hud"><span id="st">스테이지 1/14</span><span id="dc">추락 0</span><span id="tm">0:00.0</span></div><div id="bar"><i id="bf"></i></div>
-<div id="wind"></div><div id="tools"><button id="mu" aria-label="음악">♪</button><button id="pz" aria-label="일시정지">Ⅱ</button></div><div id="toast"></div><div id="flash"></div>
+<div id="hud"><span id="st">스테이지 1/18</span><span id="dc">추락 0</span><span id="tm">0:00.0</span></div><div id="bar"><i id="bf"></i></div>
+<div id="wind"></div><div id="tools"><button id="mu" aria-label="음악">♪</button><button id="pz" aria-label="일시정지">Ⅱ</button></div><div id="mm"><button class="gn" data-g="arc">🎮 아케이드 8비트</button><button class="gn" data-g="amb">🌌 앰비언트 신스</button><button class="gn" data-g="ele">⚡ 일렉트로 펑키</button><button class="gn" data-g="off">🔇 음악 끄기</button></div><div id="toast"></div><div id="flash"></div>
 <div id="joy"><i></i></div>
 <button id="jb">점프</button>
 <div id="ov"><div class="card">
 <h1 id="ot">점프맵</h1>
 <p id="op"><span class="k">WASD·방향키 이동<br>스페이스 점프<br>마우스 드래그로 시점</span><span class="t">왼쪽 화면 조이스틱<br>오른쪽 버튼 점프<br>화면 드래그로 시점</span><br>깃발에 닿으면 체크포인트!</p>
 <div id="pick"><button class="ch on" data-c="rab"><b>🐰</b>토끼</button><button class="ch" data-c="ast"><b>🧑‍🚀</b>우주인</button><button class="ch" data-c="pen"><b>🐧</b>펭귄</button><button class="ch" data-c="rob"><b>🤖</b>로봇</button></div>
+<div id="bgmL">배경음악</div><div id="bgm"><button class="gn" data-g="arc">8비트</button><button class="gn" data-g="amb">앰비언트</button><button class="gn" data-g="ele">일렉트로</button><button class="gn" data-g="off">끔</button></div>
 <div id="acts"><button id="go">출발</button><button id="cont" class="sb" style="display:none"></button><button id="rs" class="sb" style="display:none">체크포인트로</button></div>
 </div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -168,7 +176,26 @@ nx(3,0,.3,8,8,{cp:12});
 hue=H[12];
 nx(3,0,.3,8,30,{cv:[0,4.5]});[-6,6].forEach((dz,i)=>gate(cx,cy,cz+dz,i*2));
 nx(3,0,.3,8,8,{cp:13});
-// 14 피날레
+// 14 빙판 돌풍
+hue=.5;
+zone(1,9,()=>{[0,2,-2,2].forEach(dx=>nx(3,dx,.3,6,6,{ice:1}))});
+nx(3,0,.3,8,8,{cp:14});
+// 15 무중력 볼링
+hue=.72;
+zone(.35,0,()=>{nx(4,0,.3,8,36);[[-2.7,0],[0,0],[2.7,0],[-1.35,.5],[1.35,.5]].forEach(([x,ph])=>haz(cx+x,cy,cz,2.6,2.6,2.6,'z',18,.2,ph,true))});
+nx(3,0,.3,8,8,{cp:15});
+// 16 복합 시련
+hue=.02;
+nx(3,0,.3,12,12);spin(cx,cy,cz,10,-2.4);
+nx(3,0,.3,10,26);gate(cx,cy,cz-6,0);gate(cx,cy,cz+6,1.7);
+nx(3,0,.3,8,8,{cp:16});
+// 17 도약 박자
+hue=.88;
+nx(3,0,.3,5,5,{type:'pad'});nx(4,0,6,4,4,{type:'bl',grp:0,per:1.6});
+nx(3,2,.3,4,4,{type:'bl',grp:1,per:1.6});nx(3,0,.3,5,5,{type:'pad'});nx(4,-2,6,4,4,{type:'bl',grp:0,per:1.6});
+nx(3,0,.3,4,4,{type:'bl',grp:1,per:1.6});
+nx(3,0,.3,8,8,{cp:17});
+// 18 피날레
 hue=.12;
 nx(3,0,.3,5,5,{ice:1});
 nx(5,2,.3,4,7,mv('z',3,1.1,0));
@@ -186,90 +213,135 @@ const sgeo=new T.BufferGeometry();sgeo.setAttribute('position',new T.Float32Buff
 const stars=new T.Points(sgeo,new T.PointsMaterial({color:0xffffff,size:2,sizeAttenuation:false,fog:false}));S.add(stars);
 
 /* ---------- 캐릭터 ---------- */
-const hero=new T.Group(),rab=new T.Group(),ast=new T.Group();let cur=rab;const ol=new T.MeshBasicMaterial({color:0x2a1b4d,side:T.BackSide}),SG=r=>new T.SphereGeometry(r,16,12);
-function mk(g,c,x,y,z,sx,sy,sz,o,par){const m=new T.Mesh(g,new T.MeshLambertMaterial({color:c}));m.position.set(x,y,z);m.scale.set(sx,sy,sz);(par||cur).add(m);if(o){const k=new T.Mesh(g,ol);k.scale.setScalar(1.08);m.add(k)}return m}
-mk(SG(.5),0xff6fa5,0,.62,0,1,1.05,.9,1);
-mk(SG(.28),0xfff1e0,0,.55,.36,1,1.1,.45);
-mk(SG(.46),0xfff4ea,0,1.3,0,1.05,1,1,1);
-const ears=[-1,1].map(s=>{const g=new T.Group();g.position.set(s*.2,1.68,0);g.rotation.z=-s*.15;g.userData.s=s;rab.add(g);
-  mk(SG(1),0xfff4ea,0,.3,0,.14,.4,.1,1,g);mk(SG(1),0xffa6c4,0,.28,.085,.07,.26,.03,0,g);return g});
-const eyes=[-1,1].map(s=>mk(SG(.065),0x2a1b4d,s*.17,1.34,.41,1,1.3,.8));
-[-1,1].forEach(s=>{mk(SG(.08),0xffa6c4,s*.29,1.2,.36,1,.7,.5);mk(SG(.022),0xffffff,s*.17+.02,1.38,.46,1,1,1)});
-mk(SG(.04),0xff6fa5,0,1.26,.45,1.2,.8,.8);
-const sc=new T.Mesh(new T.TorusGeometry(.36,.09,8,18),new T.MeshLambertMaterial({color:0xffd166}));sc.rotation.x=Math.PI/2;sc.position.y=1.02;rab.add(sc);
-const tail=new T.Group();tail.position.set(.3,1.0,-.28);rab.add(tail);mk(new T.BoxGeometry(.2,.55,.06),0xffd166,0,-.275,0,1,1,1,0,tail);
-const pf=mk(SG(.17),0xffffff,0,.4,-.5,1,1,1,1);
-const arms=[-1,1].map(s=>mk(SG(.15),0xff6fa5,s*.52,.7,.05,1,1.2,1,1));
-const legs=[-1,1].map(s=>mk(SG(.18),0x7a5cc7,s*.21,.14,0,1,.7,1.35,1));
-function animHero(spd){
-  const air=!P.g,t=T0,fall=air&&P.vy<0;
-  if(ch==='pen'){
-    flip.forEach(f=>{f.rotation.z=-f.userData.s*(air?.9:.25+Math.sin(t*14)*.3*spd)});
-    legsP.forEach((l,i)=>{l.position.z=P.g?.1+Math.sin(t*14+i*Math.PI)*.22*spd:.1+(i?.15:-.15)});
-    pen.rotation.z=P.g?Math.sin(t*14)*.1*spd:0;
-    peyes.forEach(e=>e.scale.y=t%3.1<.12?.12:1.3);return;
-  }
-  if(ch==='rob'){
-    armsB.forEach((a,i)=>{a.position.y=.6+(air?.25:0);a.position.z=.05+(air?-.05:-Math.sin(t*14+i*Math.PI)*.2*spd)});
-    legsB.forEach((l,i)=>{l.position.z=P.g?Math.sin(t*14+i*Math.PI)*.2*spd:(i?.15:-.15)});
-    flames.forEach(f=>{f.visible=air;f.scale.y=.8+Math.sin(t*40)*.3});
-    ant2.rotation.z=Math.sin(t*10)*.2*spd;
-    reyes.forEach(e=>e.scale.y=t%3.6<.1?.1:1);return;
-  }
-  if(ch==='ast'){
-    armsA.forEach((a,i)=>{a.position.y=.7+(air?.3:0);a.position.z=.05+(air?-.05:-Math.sin(t*14+i*Math.PI)*.22*spd)});
-    legsA.forEach((l,i)=>{l.position.z=P.g?Math.sin(t*14+i*Math.PI)*.22*spd:(i?.18:-.18)});
-    ant.rotation.z=-.1+Math.sin(t*10)*.25*spd+(fall?.4:0);return;
-  }
-  arms.forEach((a,i)=>{a.position.y=.7+(air?.3:0);a.position.z=.05+(air?-.05:-Math.sin(t*14+i*Math.PI)*.22*spd)});
-  ears.forEach(g=>{g.rotation.x=-(spd*.45+(fall?.5:0)+(air&&!fall?.2:0));g.rotation.z=-g.userData.s*(.15+Math.sin(t*10+g.userData.s)*.05*spd)});
-  const bl=t%3.4<.12?.12:1.3;eyes.forEach(e=>e.scale.y=bl);
-  tail.rotation.x=.15+spd*.9+(fall?.6:0)+Math.sin(t*12)*.12*spd;tail.rotation.z=Math.sin(t*9)*.12*spd;
-  pf.position.y=.4+Math.sin(t*14)*.04*spd;
+const hero=new T.Group(),rab=new T.Group(),ast=new T.Group(),pen=new T.Group(),rob=new T.Group();
+const ol=new T.MeshBasicMaterial({color:0x2a1b4d,side:T.BackSide}),PI2=Math.PI/2;
+const SG=r=>new T.SphereGeometry(r,18,14),BG=(w,h,d)=>new T.BoxGeometry(w,h,d),CG=(a,b,h)=>new T.CylinderGeometry(a,b,h,12),CN=(r,h)=>new T.ConeGeometry(r,h,10);
+function mk(par,g,c,x,y,z,sx,sy,sz,o,bs){
+  const m=new T.Mesh(g,bs?new T.MeshBasicMaterial({color:c}):new T.MeshLambertMaterial({color:c}));
+  m.position.set(x,y,z);m.scale.set(sx||1,sy||1,sz||1);par.add(m);
+  if(o){const k=new T.Mesh(g,ol);k.scale.setScalar(1.08);m.add(k)}
+  return m;
 }
-cur=ast;
-mk(SG(.5),0xf2f4ff,0,.62,0,1,1.05,.9,1);
-mk(new T.BoxGeometry(.34,.26,.06),0x9aa4c8,0,.72,.43,1,1,1,1);
-mk(SG(.045),0xff4d4d,-.07,.72,.47,1,1,1);mk(SG(.045),0x4db8ff,.07,.72,.47,1,1,1);
-mk(new T.BoxGeometry(.6,.72,.3),0xc9cee0,0,.72,-.5,1,1,1,1);
-const belt=new T.Mesh(new T.TorusGeometry(.47,.06,8,18),new T.MeshLambertMaterial({color:0xff9f43}));belt.rotation.x=Math.PI/2;belt.position.y=.4;ast.add(belt);
-mk(SG(.5),0xf2f4ff,0,1.32,0,1.05,1,1,1);
-mk(SG(.4),0x23337a,0,1.32,.3,1.05,.85,.65);
-mk(SG(.07),0x9ec0ff,-.17,1.45,.54,1,.6,.5);
-const ant=new T.Group();ant.position.set(.3,1.75,0);ast.add(ant);
-mk(new T.CylinderGeometry(.02,.02,.32,6),0xc9cee0,0,.16,0,1,1,1,0,ant);mk(SG(.07),0xff4d4d,0,.34,0,1,1,1,0,ant);
-const armsA=[-1,1].map(s=>mk(SG(.15),0xf2f4ff,s*.52,.7,.05,1,1.2,1,1));
-const legsA=[-1,1].map(s=>mk(SG(.18),0xff9f43,s*.21,.14,0,1,.7,1.35,1));
-cur=rab;
-const pen=new T.Group(),rob=new T.Group();
-cur=pen;
-mk(SG(.52),0x2b3a67,0,.64,0,1,1.1,.95,1);
-mk(SG(.42),0xffffff,0,.6,.3,.9,1,.5);
-mk(SG(.42),0x2b3a67,0,1.3,0,1.05,1,1,1);
-mk(SG(.3),0xffffff,0,1.27,.3,1.2,.9,.5);
-const peyes=[-1,1].map(s=>mk(SG(.06),0x1b1f3a,s*.14,1.34,.5,1,1.3,.8));
-[-1,1].forEach(s=>mk(SG(.07),0xff9fbf,s*.27,1.2,.42,1,.6,.5));
-const beak=mk(new T.ConeGeometry(.1,.22,8),0xff9f43,0,1.24,.58,1,1,1);beak.rotation.x=Math.PI/2;
-const pscarf=new T.Mesh(new T.TorusGeometry(.38,.08,8,18),new T.MeshLambertMaterial({color:0xff4d6d}));pscarf.rotation.x=Math.PI/2;pscarf.position.y=1.02;pen.add(pscarf);
-const flip=[-1,1].map(s=>{const m=mk(SG(.15),0x2b3a67,s*.55,.72,0,.5,1.5,.9,1);m.userData.s=s;return m});
-const legsP=[-1,1].map(s=>mk(SG(.17),0xff9f43,s*.2,.1,.1,1,.5,1.5,1));
-mk(SG(.14),0x2b3a67,0,.35,-.5,1,1,1.2,1);
-cur=rob;
-mk(new T.BoxGeometry(.85,.8,.65),0x8ea2c9,0,.58,0,1,1,1,1);
-mk(new T.BoxGeometry(.42,.3,.05),0x3a4766,0,.6,.34,1,1,1);
-[[-.12,0xff5a5a],[0,0xffd166],[.12,0x4ee1b4]].forEach(([x,c])=>{const l=mk(SG(.035),c,x,.6,.38,1,1,1);l.material=new T.MeshBasicMaterial({color:c})});
-mk(new T.BoxGeometry(.95,.72,.75),0xb7c4e0,0,1.32,0,1,1,1,1);
-mk(new T.BoxGeometry(.74,.44,.05),0x10172e,0,1.32,.39,1,1,1);
-const reyes=[-1,1].map(s=>{const e=mk(new T.BoxGeometry(.17,.17,.03),0x5ef2ff,s*.18,1.36,.42,1,1,1);e.material=new T.MeshBasicMaterial({color:0x5ef2ff});return e});
-const rm=mk(new T.BoxGeometry(.28,.04,.03),0x5ef2ff,0,1.2,.42,1,1,1);rm.material=new T.MeshBasicMaterial({color:0x5ef2ff});
-[-1,1].forEach(s=>{const e=mk(new T.CylinderGeometry(.1,.1,.14,10),0xff9f43,s*.52,1.32,0,1,1,1,1);e.rotation.z=Math.PI/2});
-const ant2=new T.Group();ant2.position.set(0,1.68,0);rob.add(ant2);
-mk(new T.CylinderGeometry(.025,.025,.3,6),0xc9cee0,0,.15,0,1,1,1,0,ant2);
-const ab=mk(SG(.08),0xff9f43,0,.33,0,1,1,1,0,ant2);ab.material=new T.MeshBasicMaterial({color:0xff9f43});
-const armsB=[-1,1].map(s=>mk(new T.BoxGeometry(.18,.5,.18),0x8ea2c9,s*.58,.6,.05,1,1,1,1));
-const legsB=[-1,1].map(s=>mk(new T.BoxGeometry(.24,.28,.32),0xff9f43,s*.2,.14,0,1,1,1,1));
-const flames=[-1,1].map(s=>{const f=new T.Mesh(new T.ConeGeometry(.1,.4,8),new T.MeshBasicMaterial({color:0xffa94d}));f.rotation.x=Math.PI;f.position.set(s*.2,-.15,0);f.visible=false;rob.add(f);return f});
-cur=rab;
+function grp(par,x,y,z){const g=new T.Group();g.position.set(x,y,z);par.add(g);return g}
+function skel(R){const piv=grp(R,0,.45,0),tor=grp(piv,0,-.45,0);return{R,piv,tor}}
+function arm(par,s,x,y,c,len,tc){const a=grp(par,s*x,y,0);mk(a,SG(.15),c,0,-len/2,.02,1,len/.3,1,1);if(tc)mk(a,SG(.115),tc,0,-len,.04);return a}
+function leg(R,s,x,c){const l=grp(R,s*x,.3,0);mk(l,SG(.18),c,0,-.18,.06,1,.7,1.35,1);return l}
+
+function buildRab(){
+  const {R,piv,tor}=skel(rab);
+  mk(tor,SG(.5),0xff6fa5,0,.62,0,1,1.05,.9,1);
+  mk(tor,SG(.28),0xfff1e0,0,.55,.37,1,1.1,.4);
+  mk(tor,BG(.3,.14,.05),0xe0558a,0,.4,.44);
+  [-1,1].forEach(s=>mk(tor,SG(.022),0xffffff,s*.08,.92,.45,1,3.5,1));
+  const sc=mk(tor,new T.TorusGeometry(.36,.09,8,18),0xffd166,0,1.02,0);sc.rotation.x=PI2;
+  const tl=grp(tor,.3,1.0,-.28);mk(tl,BG(.2,.55,.06),0xffd166,0,-.275,0);mk(tl,SG(.06),0xff4d8d,0,-.56,0);
+  const pf=grp(tor,0,.4,-.5);mk(pf,SG(.19),0xffffff,0,0,0,1,1,1,1);
+  const head=grp(tor,0,1.3,0);mk(head,SG(.46),0xfff4ea,0,0,0,1.05,1,1,1);
+  const ears=[-1,1].map(s=>{const g=grp(head,s*.2,.38,0);g.rotation.z=-s*.15;g.userData.s=s;
+    mk(g,SG(1),0xfff4ea,0,.3,0,.14,.4,.1,1);mk(g,SG(1),0xffa6c4,0,.28,.085,.07,.26,.03);
+    const tp=grp(g,0,.62,0);mk(tp,SG(.09),0xffd9e6,0,.04,0,1,1.2,.7);g.userData.tp=tp;return g});
+  const eyes=[-1,1].map(s=>mk(head,SG(.065),0x2a1b4d,s*.17,.04,.41,1,1.3,.8));
+  [-1,1].forEach(s=>{mk(head,SG(.022),0xffffff,s*.19,.08,.46);mk(head,SG(.08),0xffa6c4,s*.29,-.1,.36,1,.7,.5);
+    [.03,-.04].forEach((dy,i)=>{const w=mk(head,BG(.2,.012,.012),0x8a6a78,s*.36,-.07+dy,.32);w.rotation.z=s*(.2-i*.4)})});
+  mk(head,SG(.04),0xff6fa5,0,-.04,.45,1.2,.8,.8);
+  return{piv,tor,head,eyes,
+    armL:arm(tor,-1,.52,.92,0xff6fa5,.45,0xfff4ea),armR:arm(tor,1,.52,.92,0xff6fa5,.45,0xfff4ea),
+    legL:leg(R,-1,.21,0xfff4ea),legR:leg(R,1,.21,0xfff4ea),
+    upd(a){
+      ears.forEach(g=>{const s=g.userData.s;
+        g.rotation.x=-(a.run*.45+(a.fall?.5:0)+(a.air&&!a.fall?.2:0));
+        g.rotation.z=-s*(.15+Math.sin(a.t*10+s)*.05*a.run+((a.t%4.3<.22&&s>0)?.25:0));
+        g.userData.tp.rotation.x=-Math.sin(a.t*14-1)*.35*a.run-(a.fall?.5:0)});
+      tl.rotation.x=.15+a.run*.9+(a.fall?.6:0)+Math.sin(a.t*12)*.12*a.run;tl.rotation.z=Math.sin(a.t*9)*.12*a.run;
+      pf.position.y=.4+Math.sin(a.t*14)*.04*a.run}};
+}
+function buildPen(){
+  const {R,piv,tor}=skel(pen);
+  mk(tor,SG(.52),0x2b3a67,0,.64,0,1,1.1,.95,1);
+  mk(tor,SG(.42),0xffffff,0,.6,.3,.9,1,.5);
+  const sc=mk(tor,new T.TorusGeometry(.38,.08,8,18),0xff4d6d,0,1.02,0);sc.rotation.x=PI2;
+  mk(tor,SG(.14),0x2b3a67,0,.35,-.5,1,1,1.4,1);
+  const head=grp(tor,0,1.3,0);mk(head,SG(.42),0x2b3a67,0,0,0,1.05,1,1,1);
+  mk(head,SG(.3),0xffffff,0,-.03,.3,1.2,.9,.5);
+  const eyes=[-1,1].map(s=>mk(head,SG(.06),0x1b1f3a,s*.14,.04,.5,1,1.3,.8));
+  [-1,1].forEach(s=>{mk(head,SG(.022),0xffffff,s*.15,.08,.54);mk(head,SG(.07),0xff9fbf,s*.27,-.1,.42,1,.6,.5)});
+  const bk=grp(head,0,-.06,.55);const bt=mk(bk,CN(.1,.22),0xff9f43,0,0,.02);bt.rotation.x=PI2;
+  mk(head,SG(.44),0xe94560,0,.2,-.02,1.05,.6,1.05,1);
+  const pom=grp(head,0,.5,0);mk(pom,SG(.1),0xffffff,0,0,0,1,1,1,1);
+  return{piv,tor,head,eyes,
+    armL:arm(tor,-1,.55,.95,0x2b3a67,.5),armR:arm(tor,1,.55,.95,0x2b3a67,.5),
+    legL:leg(R,-1,.2,0xff9f43),legR:leg(R,1,.2,0xff9f43),
+    upd(a){
+      const f=a.air?.9:.25+Math.abs(Math.sin(a.t*14))*.35*a.run;
+      this.armL.rotation.set(0,0,-f);this.armR.rotation.set(0,0,f);
+      piv.rotation.z=a.air?0:Math.sin(a.t*14)*.1*a.run;
+      pom.rotation.z=Math.sin(a.t*9)*.3*a.run;pom.position.y=.5+(a.fall?.05:0);bk.rotation.x=a.air?-.1:0}};
+}
+function buildAst(){
+  const {R,piv,tor}=skel(ast);
+  mk(tor,SG(.5),0xf2f4ff,0,.62,0,1,1.05,.9,1);
+  mk(tor,BG(.36,.28,.06),0x9aa4c8,0,.72,.43,1,1,1,1);
+  const l1=mk(tor,SG(.04),0xff4d4d,-.08,.72,.47,1,1,1,0,1),l2=mk(tor,SG(.04),0x4db8ff,.08,.72,.47,1,1,1,0,1);
+  mk(tor,BG(.3,.06,.02),0x3a4766,0,.62,.47);
+  const belt=mk(tor,new T.TorusGeometry(.47,.06,8,18),0xff9f43,0,.4,0);belt.rotation.x=PI2;
+  mk(tor,BG(.14,.1,.03),0xe94560,-.48,.98,.18);
+  const pack=grp(tor,0,.72,-.5);mk(pack,BG(.62,.72,.3),0xc9cee0,0,0,0,1,1,1,1);
+  [-1,1].forEach(s=>mk(pack,CG(.09,.12,.14),0x6b7394,s*.16,-.42,0));
+  const fl=[-1,1].map(s=>{const f=mk(pack,CN(.1,.4),0xffa94d,s*.16,-.62,0,1,1,1,0,1);f.rotation.x=Math.PI;f.visible=false;return f});
+  const head=grp(tor,0,1.32,0);mk(head,SG(.5),0xf2f4ff,0,0,0,1.05,1,1,1);
+  const vz=new T.Mesh(SG(.4),new T.MeshPhongMaterial({color:0x23337a,shininess:150,specular:0x9ec0ff}));vz.position.set(0,0,.3);vz.scale.set(1.05,.85,.65);head.add(vz);
+  mk(head,SG(.07),0x9ec0ff,-.17,.12,.55,1,.6,.5,0,1);
+  const eyes=[-1,1].map(s=>mk(head,SG(.05),0xcfe6ff,s*.14,-.02,.565,1,1.2,.6,0,1));
+  [-1,1].forEach(s=>{const p=mk(head,CG(.1,.1,.12),0x6b7394,s*.52,0,0,1,1,1,1);p.rotation.z=PI2});
+  const an=grp(head,.3,.43,0);mk(an,CG(.02,.02,.3),0xc9cee0,0,.15,0);const ab=mk(an,SG(.07),0xff4d4d,0,.33,0,1,1,1,0,1);
+  return{piv,tor,head,eyes,
+    armL:arm(tor,-1,.52,.92,0xf2f4ff,.45,0xff9f43),armR:arm(tor,1,.52,.92,0xf2f4ff,.45,0xff9f43),
+    legL:leg(R,-1,.21,0xff9f43),legR:leg(R,1,.21,0xff9f43),
+    upd(a){
+      an.rotation.z=-.1+Math.sin(a.t*10)*.25*a.run+(a.fall?.4:0);
+      ab.material.color.setHex(Math.floor(a.t*2)%2?0xff4d4d:0x661a1a);
+      l1.material.color.setHex(Math.floor(a.t*3)%2?0xff4d4d:0x661a1a);
+      l2.material.color.setHex(Math.floor(a.t*1.5)%2?0x4db8ff:0x1b4a6b);
+      fl.forEach(f=>{f.visible=a.air;f.scale.y=.8+Math.sin(a.t*40)*.3})}};
+}
+function buildRob(){
+  const {R,piv,tor}=skel(rob);
+  mk(tor,BG(.85,.8,.65),0x8ea2c9,0,.58,0,1,1,1,1);
+  mk(tor,BG(.42,.3,.05),0x3a4766,0,.6,.34);
+  const leds=[[-.12,0xff5a5a],[0,0xffd166],[.12,0x4ee1b4]].map(([x,c])=>mk(tor,SG(.035),c,x,.6,.38,1,1,1,0,1));
+  [[-.34,.26],[.34,.26],[-.34,.9],[.34,.9]].forEach(([x,y])=>mk(tor,SG(.04),0x5b6a8f,x,y,.33));
+  const gg=grp(tor,0,.62,-.34);gg.rotation.x=PI2;mk(gg,CG(.2,.2,.06),0xff9f43,0,0,0,1,1,1,1);mk(gg,CG(.06,.06,.1),0x5b6a8f,0,0,0);
+  const head=grp(tor,0,1.32,0);mk(head,BG(.95,.72,.75),0xb7c4e0,0,0,0,1,1,1,1);
+  mk(head,BG(.74,.44,.05),0x10172e,0,0,.39);
+  const eyes=[-1,1].map(s=>mk(head,BG(.17,.17,.03),0x5ef2ff,s*.18,.04,.42,1,1,1,0,1));
+  const mouth=mk(head,BG(.28,.04,.03),0x5ef2ff,0,-.12,.42,1,1,1,0,1);
+  [-1,1].forEach(s=>{const e=mk(head,CG(.1,.1,.14),0xff9f43,s*.52,0,0,1,1,1,1);e.rotation.z=PI2;mk(head,BG(.14,.03,.03),0x5ef2ff,s*.18,.18,.42,1,1,1,0,1)});
+  const an=grp(head,0,.36,0);mk(an,CG(.025,.025,.3),0xc9cee0,0,.15,0);const ab=mk(an,SG(.08),0xff9f43,0,.33,0,1,1,1,0,1);
+  const fl=[-1,1].map(s=>{const f=mk(R,CN(.1,.4),0xffa94d,s*.2,-.1,0,1,1,1,0,1);f.rotation.x=Math.PI;f.visible=false;return f});
+  const ra=s=>{const a=grp(tor,s*.58,.92,0);mk(a,SG(.1),0x5b6a8f,0,0,0);mk(a,BG(.18,.45,.18),0x8ea2c9,0,-.24,0,1,1,1,1);mk(a,BG(.22,.14,.2),0xff9f43,0,-.52,.02,1,1,1,1);return a};
+  const rl=s=>{const l=grp(R,s*.2,.3,0);mk(l,BG(.2,.22,.2),0x8ea2c9,0,-.08,0,1,1,1,1);mk(l,BG(.26,.14,.36),0xff9f43,0,-.22,.05,1,1,1,1);return l};
+  return{piv,tor,head,eyes,armL:ra(-1),armR:ra(1),legL:rl(-1),legR:rl(1),
+    upd(a){
+      an.rotation.z=Math.sin(a.t*10)*.2*a.run;ab.material.color.setHex(Math.floor(a.t*2)%2?0xff9f43:0xffe0b0);
+      gg.rotation.y=a.t*(2+a.run*8);
+      leds.forEach((l,i)=>l.scale.setScalar(Math.floor(a.t*3)%3===i?1.5:1));
+      fl.forEach(f=>{f.visible=a.air;f.scale.y=.8+Math.sin(a.t*40)*.3});
+      mouth.scale.set(a.air?.4:1,a.air?4:1,1)}};
+}
+const MD={rab:buildRab(),ast:buildAst(),pen:buildPen(),rob:buildRob()};
+function animHero(spd){
+  const m=MD[ch];if(!m)return;
+  const t=T0,air=!P.g,fall=air&&P.vy<0,up=air&&!fall,run=spd,sw=Math.sin(t*14)*run,idle=1-Math.min(1,run*3);
+  m.piv.rotation.x=air?(up?-.15:.2):run*.2;
+  m.piv.position.y=.45+(air?0:Math.abs(Math.sin(t*14))*.07*run);
+  m.tor.scale.y=1+Math.sin(t*2.6)*.02*idle;
+  m.head.rotation.set(-run*.1+(fall?-.25:0),Math.sin(t*.8)*.35*idle*(Math.sin(t*.37)>0?1:.2),Math.sin(t*1.3)*.05*idle);
+  if(air){m.armL.rotation.set(up?-2.3:-.3,0,up?-.25:-.9);m.armR.rotation.set(up?-2.3:-.3,0,up?.25:.9);m.legL.rotation.x=up?-.7:.3;m.legR.rotation.x=up?.5:-.3}
+  else{m.armL.rotation.set(-sw*.9,0,-.08);m.armR.rotation.set(sw*.9,0,.08);m.legL.rotation.x=sw*.9;m.legR.rotation.x=-sw*.9}
+  const bl=t%3.3<.12?.1:1;
+  m.eyes.forEach(e=>{if(!e.userData.b)e.userData.b=e.scale.y;e.scale.y=e.userData.b*bl});
+  m.upd({t,run,air,fall,up});
+}
 hero.add(rab,ast,pen,rob);S.add(hero);
 const wps=[],wmat=new T.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0,fog:false});
 for(let i=0;i<50;i++){const m=new T.Mesh(new T.BoxGeometry(2.4,.04,.04),wmat);m.position.set((Math.random()-.5)*50,Math.random()*9,(Math.random()-.5)*50);S.add(m);wps.push(m)}
@@ -295,28 +367,83 @@ function fx(dt){
 let paused=false,sv=null;
 try{sv=JSON.parse(localStorage.getItem('jm-save'))}catch(e){}
 function saveP(){try{localStorage.setItem('jm-save',JSON.stringify({cp:curCp,tt,deaths}))}catch(e){}}
-if(sv&&sv.cp>0&&sv.cp<14){const b=$('cont');b.textContent='이어하기 · 스테이지 '+(sv.cp+1);b.style.display='inline-block'}
+if(sv&&sv.cp>0&&sv.cp<NM.length){const b=$('cont');b.textContent='이어하기 · 스테이지 '+(sv.cp+1);b.style.display='inline-block'}
 $('cont').addEventListener('click',()=>{curCp=sv.cp;tt=sv.tt||0;deaths=sv.deaths||0;const c=cps[curCp];Object.assign(P,{x:c.x,y:c.y+.01,z:c.z,vx:0,vy:0,vz:0,g:null});hud();start()});
 function pause(){
   if(!run)return;run=false;paused=true;jx=jy=0;joy.style.display='none';ptr.clear();
-  $('ot').textContent='일시정지';$('op').innerHTML='스테이지 '+(curCp+1)+'/14<br>'+fmt(tt)+' · 추락 '+deaths;
+  $('ot').textContent='일시정지';$('op').innerHTML='스테이지 '+(curCp+1)+'/'+NM.length+'<br>'+fmt(tt)+' · 추락 '+deaths;
   $('go').textContent='계속하기';$('rs').style.display='inline-block';$('ov').style.display='flex';
 }
 $('pz').addEventListener('click',pause);
 $('rs').addEventListener('click',()=>{const c=cps[curCp];Object.assign(P,{x:c.x,y:c.y+.01,z:c.z,vx:0,vy:0,vz:0,g:null});start()});
 addEventListener('keydown',e=>{if(e.code==='Escape'||e.code==='KeyP'){if(run)pause();else if(paused)start()}});
 
-/* ---- 배경음악 ---- */
-let mus=true,mT=0,mS=0;try{mus=localStorage.getItem('jm-mu')!=='0'}catch(e){}
-$('mu').classList.toggle('off',!mus);
-$('mu').addEventListener('click',()=>{mus=!mus;$('mu').classList.toggle('off',!mus);try{localStorage.setItem('jm-mu',mus?'1':'0')}catch(e){}});
-const CHD=[[0,4,7,11],[5,9,12,16],[7,11,14,17],[4,7,11,14]];
-function mn(f,t,d,ty,v){const o=AC.createOscillator(),g=AC.createGain();o.type=ty;o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+.02);g.gain.exponentialRampToValueAtTime(.0005,t+d);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d+.05)}
+/* ---- 배경음악 (Web Audio 합성 · 3장르) ---- */
+let mG='arc',mS=0,mT=0,MG,AB,NB;
+try{mG=localStorage.getItem('jm-bgm')||'arc'}catch(e){}
+if(!['arc','amb','ele','off'].includes(mG))mG='arc';
+const SD={arc:.1,ele:.125,amb:.5},N=(n,b)=>b*2**(n/12),PEN=[0,3,5,7,10,12];
+function mInit(){
+  if(MG)return;
+  MG=AC.createGain();MG.gain.value=.9;MG.connect(AC.destination);
+  AB=AC.createGain();AB.connect(MG);
+  const DL=AC.createDelay(1.5),fb=AC.createGain(),wet=AC.createGain();DL.delayTime.value=.5;fb.gain.value=.5;wet.gain.value=.5;
+  AB.connect(DL);DL.connect(fb);fb.connect(DL);DL.connect(wet);wet.connect(MG);
+  NB=AC.createBuffer(1,AC.sampleRate*.5,AC.sampleRate);const d=NB.getChannelData(0);for(let k=0;k<d.length;k++)d[k]=Math.random()*2-1;
+}
+function tone(f,t,d,ty,v,fe,bus){
+  const o=AC.createOscillator(),g=AC.createGain();o.type=ty;o.frequency.setValueAtTime(f,t);
+  if(fe)o.frequency.exponentialRampToValueAtTime(fe,t+d);
+  g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+.01);g.gain.exponentialRampToValueAtTime(.0005,t+d);
+  o.connect(g);g.connect(bus||MG);o.start(t);o.stop(t+d+.05);
+}
+function nz(t,d,v,hp){
+  const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=NB;f.type='highpass';f.frequency.value=hp;
+  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0005,t+d);s.connect(f);f.connect(g);g.connect(MG);s.start(t);s.stop(t+d);
+}
+function padv(f,t,d,v){
+  const g=AC.createGain(),lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=900;
+  g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+d*.4);g.gain.linearRampToValueAtTime(.0001,t+d);
+  [-7,7].forEach(c=>{const o=AC.createOscillator();o.type='sawtooth';o.frequency.value=f;o.detune.value=c;o.connect(lp);o.start(t);o.stop(t+d+.05)});
+  lp.connect(g);g.connect(AB);
+}
+const GEN={
+  arc(i,t){ // 통통 튀는 8비트 아케이드
+    const b=Math.floor(i/16)%4,s=i%16,r=[0,-4,3,-2][b];
+    if(s%2===0)tone(N(r-24,440),t,.18,'triangle',.11);
+    if(s%4===0||((s*7+b*3)%5<2))tone(N(PEN[(s*3+b*5)%6],440),t,.12,'square',.035);
+    if(s===0||s===8)tone(150,t,.1,'sine',.18,45);
+    if(s===4||s===12)nz(t,.09,.12,1500);
+    if(s%2===1)nz(t,.03,.05,6000);
+  },
+  ele(i,t){ // 신나는 일렉트로 / 펑키
+    const b=Math.floor(i/32)%2,s=i%16,r=[0,5][b],BL=[0,-99,0,12,-99,0,10,-99,0,-99,12,0,-99,7,-99,10][s];
+    if(s%4===0)tone(130,t,.16,'sine',.3,42);
+    if(s===4||s===12){nz(t,.12,.16,1200);tone(190,t,.06,'triangle',.1,120)}
+    if(s%4===2)nz(t,.09,.07,7000);else if(s%2===1)nz(t,.03,.03,8000);
+    if(BL>-50)tone(N(r+BL,82.41),t,.14,'square',.06);
+    if(s===3||s===7||s===11||s===14)[0,3,7,10].forEach(n=>tone(N(r+n+12,164.81),t,.09,'sawtooth',.018));
+  },
+  amb(i,t){ // 잔잔한 앰비언트 신스
+    const b=Math.floor(i/8)%4,s=i%8,C=[[0,3,7,14],[-4,0,3,7],[3,7,10,14],[-2,2,5,9]][b];
+    if(s===0){C.forEach(n=>padv(N(n,110),t,4.2,.03));tone(N(C[0],55),t,3.8,'sine',.09,0,AB)}
+    if(Math.random()<.45)tone(N(C[Math.floor(Math.random()*4)]+12*(1+(Math.random()<.5?1:0)),220),t,1.6,'sine',.04,0,AB);
+  }
+};
+function setG(g){
+  mG=g;mS=0;mT=0;
+  document.querySelectorAll('.gn').forEach(b=>b.classList.toggle('on',b.dataset.g===g));
+  $('mu').classList.toggle('off',g==='off');
+  try{localStorage.setItem('jm-bgm',g)}catch(e){}
+}
+document.querySelectorAll('.gn').forEach(b=>b.addEventListener('click',()=>{setG(b.dataset.g);if(b.closest('#mm'))$('mm').classList.remove('show')}));
+$('mu').addEventListener('click',()=>$('mm').classList.toggle('show'));
+setG(mG);
 setInterval(()=>{
-  if(!mus||!run||!AC)return;
-  try{if(mT<AC.currentTime)mT=AC.currentTime+.05;
-  while(mT<AC.currentTime+.3){const c=CHD[Math.floor(mS/8)%4],i=mS%8;mn(220*2**((c[i%4]+(i>3?12:0))/12),mT,.5,'triangle',.035);if(i===0)mn(110*2**(c[0]/12),mT,1.6,'sine',.06);mS++;mT+=.21}}catch(e){}
-},100);
+  if(mG==='off'||!run||!AC)return;
+  try{mInit();if(mT<AC.currentTime)mT=AC.currentTime+.05;
+    while(mT<AC.currentTime+.25){GEN[mG](mS,mT);mS++;mT+=SD[mG]}}catch(e){}
+},80);
 const shadow=new T.Mesh(new T.CircleGeometry(.5,16),new T.MeshBasicMaterial({color:0,transparent:true,opacity:.3}));
 shadow.rotation.x=-PI/2;S.add(shadow);
 
@@ -347,9 +474,9 @@ function up(e){const q=ptr.get(e.pointerId);if(!q)return;ptr.delete(e.pointerId)
 addEventListener('pointerup',up);addEventListener('pointercancel',up);
 
 function toast(s){const t=$('toast');t.textContent=s;t.style.opacity=1;clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.opacity=0,1100)}
-const NM=['첫걸음','역주행 컨베이어','빙판','박자 맞춰','달 산책','볼링장','압착 문','유리 다리','기차 점프','돌풍 능선','트램펄린','컨베이어 박자','러닝머신','피날레'];
+const NM=['첫걸음','역주행 컨베이어','빙판','박자 맞춰','달 산책','볼링장','압착 문','유리 다리','기차 점프','돌풍 능선','트램펄린','컨베이어 박자','러닝머신','빙판 돌풍','무중력 볼링','복합 시련','도약 박자','피날레'];
 let AC;function sfx(f,d,ty,v,f2){try{AC=AC||new AudioContext();const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type=ty;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(AC.destination);o.start();o.stop(t+d)}catch(e){}}
-function hud(){$('st').textContent='스테이지 '+(curCp+1)+'/14';$('dc').textContent='추락 '+deaths;$('bf').style.width=(curCp/14*100)+'%'}
+function hud(){$('st').textContent='스테이지 '+(curCp+1)+'/'+NM.length;$('dc').textContent='추락 '+deaths;$('bf').style.width=(curCp/NM.length*100)+'%'}
 function die(){
   deaths++;sfx(300,.25,'sawtooth',.06,80);hud();const c=cps[curCp];Object.assign(P,{x:c.x,y:c.y+.01,z:c.z,vx:0,vy:0,vz:0,g:null});
   const f=$('flash');f.style.transition='none';f.style.opacity=.6;requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.transition='opacity .35s';f.style.opacity=0}));
@@ -435,7 +562,7 @@ function step(dt){
   $('tm').textContent=fmt(tt);
 }
 function draw(dt){
-  hero.position.set(P.x,P.y,P.z);const sq=cl(P.vy/35,-.3,.3)*.4,spd=cl(Math.hypot(P.vx,P.vz)/4,0,1);hero.scale.set(1-sq*.5,1+sq,1-sq*.5);legs.forEach((l,i)=>{l.position.z=P.g?Math.sin(T0*14+i*PI)*.22*spd:(i?.18:-.18)});animHero(spd);
+  hero.position.set(P.x,P.y,P.z);const sq=cl(P.vy/35,-.3,.3)*.4,spd=cl(Math.hypot(P.vx,P.vz)/4,0,1);hero.scale.set(1-sq*.5,1+sq,1-sq*.5);animHero(spd);
   const d=((P.face-hero.rotation.y+PI)%(2*PI)+2*PI)%(2*PI)-PI;hero.rotation.y+=d*Math.min(1,dt*14);
   let st=-1e9;
   for(const q of plats){if(!q.on)continue;const m=q.m.position;
